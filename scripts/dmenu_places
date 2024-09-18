@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# dmenu theming
+
+prompt="-p Path:"
+root_path="$HOME"
+
+find_path="$(find $root_path -maxdepth 3 -type d | \
+             sed 's|^'$root_path/'||' | \
+             dmenu -i $prompt -l 15)"
+
+if [[ ! -z "$find_path" ]]; then
+    nemo "$find_path"
+fi
+
+exit 0

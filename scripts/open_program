@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# This script checks if an app window is open.
+# if the window is open and focused, it minimizes it. if not in focus,
+# it focuses it. if window is not open, it opens a new instance.
+# intended to be used with a keybinding to "toggle" a window.
+
+
+# Check if two arguments are provided
+if [ "$#" -ne 2 ]; then
+	echo "Usage: $0 <window_class> <start_command>"
+	exit 1
+fi
+
+# Arguments: window class and command to start the application
+TARGET_WINDOW_CLASS=$1
+START_COMMAND=$2
+
+# Find the window IDs based on the class
+TARGET_WINDOW_IDS=($(xdotool search --class "$TARGET_WINDOW_CLASS" 2>/dev/null))
+
+# If no window is found, start the application
+if [ "${#TARGET_WINDOW_IDS[@]}" -eq 0 ]; then
+	$START_COMMAND &
+	exit 0
+fi
+
+# Select the most recent window ID (last in the array)
+TARGET_WINDOW_ID=${TARGET_WINDOW_IDS[-1]}
+
+# Get the currently focused window ID
+FOCUSED_WINDOW_ID=$(xdotool getwindowfocus)
+
+# Toggle window: minimize if focused, activate if not
+if [ "$FOCUSED_WINDOW_ID" == "$TARGET_WINDOW_ID" ]; then
+	xdotool windowminimize "$TARGET_WINDOW_ID"
+else
+	xdotool windowactivate "$TARGET_WINDOW_ID"
+fi

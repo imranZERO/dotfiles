@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Define options
+options="Cancel\nLock Screen\nSleep\nLogout\nShutdown\nReboot"
+
+# Display the menu using dmenu
+choice=$(echo -e "$options" | dmenu -i -p "Power Menu:")
+
+# Execute the chosen option
+case $choice in
+	"Cancel")
+		exit 0
+		;;
+	"Lock Screen")
+		cinnamon-screensaver-command --lock
+		;;
+	"Sleep")
+		systemctl suspend
+		;;
+	"Logout")
+		if echo -e "Yes\nNo" | dmenu -i -p "Are you sure you want to logout?" | grep -q "Yes"; then
+			cinnamon-session-quit --logout --force
+		fi
+		;;
+	"Shutdown")
+		if echo -e "Yes\nNo" | dmenu -i -p "Are you sure you want to shutdown?" | grep -q "Yes"; then
+			systemctl poweroff
+		fi
+		;;
+	"Reboot")
+		if echo -e "Yes\nNo" | dmenu -i -p "Are you sure you want to reboot?" | grep -q "Yes"; then
+			systemctl reboot
+		fi
+		;;
+	*)
+		exit 1
+		;;
+esac

@@ -1,0 +1,197 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+    "logo":
+    {
+        "padding":
+        {
+            "top": 7
+        }
+    },
+    "general":
+    {
+        "multithreading": true
+    },
+    "display":
+    {
+        "separator": "➜    "
+    },
+    "modules":
+    [
+        {
+            "type": "title",
+            "key": "{icon}  User                 ",
+            "keyColor": "blue"
+        },
+        "break",
+        {
+            "type": "host",
+            "key": "{icon}  System               ",
+            "keyColor": "blue",
+            "outputColor": "bright_magenta"
+        },
+        {
+            "type": "bios",
+            "key": "{icon}  Firmware             ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "os",
+            "key": "{icon}  Operating System     ",
+            "keyColor": "blue",
+            "outputColor": "bright_cyan"
+        },
+        {
+            "type": "kernel",
+            "key": "{icon}  Kernel               ",
+            "keyColor": "blue",
+            "outputColor": "bright_yellow"
+        },
+        {
+            "type": "cpu",
+            "key": "{icon}  Processor            ",
+            "keyColor": "blue",
+            "outputColor": "bright_red",
+            "temp":
+            {
+                "green": 55,
+                "yellow": 70
+            }
+        },
+        // {
+        //     "type": "cpucache",
+        //     "key": "{icon}  Cache                ",
+        //     "keyColor": "blue"
+        // },
+        {
+            "type": "gpu",
+            "key": "{icon}  Graphic Card         ",
+            "keyColor": "blue",
+            "outputColor": "bright_cyan",
+            "temp":
+            {
+                "green": 55,
+                "yellow": 70
+            }
+        },
+        {
+            "type": "display",
+            "key": "{icon}  Monitor              ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "memory",
+            "key": "{icon}  Memory               ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "swap",
+            "key": "{icon}  Swap                 ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "disk",
+            "key": "{icon}  Hard Drive           ",
+            "keyColor": "blue",
+            "outputColor": "bright_cyan"
+        },
+        "break",
+        {
+            "type": "packages",
+            "key": "{icon}  Installed Packages   ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "shell",
+            "key": "{icon}  Shell                ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "de",
+            "key": "{icon}  Desktop Environment  ",
+            "keyColor": "blue",
+            "outputColor": "bright_magenta"
+        },
+        {
+            "type": "wm",
+            "key": "{icon}  Window Manager       ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "wmtheme",
+            "key": "{icon}  Theme                ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "theme",
+            "key": "{icon}  Theme Variant        ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "icons",
+            "key": "{icon}  Icons                ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "font",
+            "key": "{icon}  Fonts                ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "cursor",
+            "key": "{icon}  Mouse Cursor         ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "terminal",
+            "key": "{icon}  Terminal             ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "localip",
+            "key": "{icon}  IP Address           ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "battery",
+            "key": "{icon}  Battery              ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "poweradapter",
+            "key": "{icon}  Power Adapter        ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "locale",
+            "key": "{icon}  Locale               ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "break",
+            "key": "{icon}"
+        },
+        {
+            "type": "datetime",
+            "key": "{icon}  Date & Time          ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "uptime",
+            "key": "{icon}  Uptime               ",
+            "keyColor": "blue",
+            "outputColor": "bright_red"
+        },
+        {
+            "type": "command",
+            "key": "{icon}  OS Age               ",
+            "keyColor": "blue",
+            "text": "echo \"$(( ($(date +%s) - $(stat -c%W /)) / 86400 ))\" days"
+        },
+        {
+            "type": "break",
+            "key": "{icon}",
+            "keyColor": "blue"
+        },
+        "colors"
+    ]
+}

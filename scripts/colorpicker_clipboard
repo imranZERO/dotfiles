@@ -1,0 +1,4 @@
+#!/bin/bash
+
+color=$(xcolor)  # Pick a color using xcolor
+echo -n $color | xclip -selection clipboard  # Copy the color to clipboard

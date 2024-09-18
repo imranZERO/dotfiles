@@ -1,0 +1,86 @@
+[/]
+custom-list=['custom1', 'custom2', 'custom3', 'custom4', 'custom5', 'custom6', 'custom7', 'custom8', 'custom9', 'custom10', 'custom11', 'custom12', '__dummy__']
+looking-glass-keybinding=@as []
+show-desklets=@as []
+
+[custom-keybindings/custom1]
+binding=['<Super>grave']
+command='/home/imran/scripts/open_program kitty kitty'
+name='open kitty'
+
+[custom-keybindings/custom10]
+binding=['<Super>k']
+command='/home/imran/scripts/dmenu_kill'
+name='dmenu kill'
+
+[custom-keybindings/custom11]
+binding=['<Super>s']
+command='/home/imran/scripts/dmenu_websearch'
+name='dmenu websearch'
+
+[custom-keybindings/custom12]
+binding=['<Super>o']
+command='/home/imran/scripts/dmenu_places'
+name='dmenu places'
+
+[custom-keybindings/custom2]
+binding=['<Super>Return']
+command='kitty'
+name='kitty'
+
+[custom-keybindings/custom3]
+binding=['<Super>space']
+command='/home/imran/scripts/open_program Gvim "gvim -geometry 90x45"'
+name='open gvim'
+
+[custom-keybindings/custom4]
+binding=['<Primary><Alt>c']
+command='/home/imran/scripts/colorpicker_clipboard'
+name='colorpicker'
+
+[custom-keybindings/custom5]
+binding=['<Primary><Shift>Escape']
+command='flatpak run io.missioncenter.MissionCenter'
+name='Task manager'
+
+[custom-keybindings/custom6]
+binding=['<Shift><Super>s']
+command='gnome-screenshot -c -a\n'
+name='Screenshot copy to clipboard'
+
+[custom-keybindings/custom7]
+binding=['<Super>g']
+command='/home/imran/scripts/open_program xed xed'
+name='Text editor'
+
+[custom-keybindings/custom8]
+binding=['<Super>r']
+command='dmenu_run'
+name='dmenu'
+
+[custom-keybindings/custom9]
+binding=['<Super>F4']
+command='/home/imran/scripts/dmenu_power'
+name='dmenu power'
+
+[media-keys]
+screensaver=['<Super>l', 'XF86ScreenSaver']
+video-rotation-lock=@as []
+
+[wm]
+close=['<Alt>F4', '<Super>q']
+maximize=['<Super>Up']
+minimize=['<Shift><Super>Down']
+move-to-monitor-down=@as []
+move-to-monitor-left=@as []
+move-to-monitor-right=@as []
+move-to-monitor-up=@as []
+move-to-workspace-left=['<Primary><Shift><Super>Left']
+move-to-workspace-right=['<Primary><Shift><Super>Right']
+push-tile-down=@as []
+push-tile-up=@as []
+switch-to-workspace-down=['<Primary><Super>Down']
+switch-to-workspace-left=['<Primary><Super>Left']
+switch-to-workspace-right=['<Primary><Super>Right']
+switch-to-workspace-up=['<Primary><Super>Up', '<Super>Tab']
+unmaximize=['<Alt>F5', '<Super>Down']

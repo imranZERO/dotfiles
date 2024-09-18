@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# copy command output to clipboard
+# usage: uname -r | copy
+
+xclip -selection clipboard
