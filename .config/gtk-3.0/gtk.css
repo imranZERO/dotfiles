@@ -14,9 +14,11 @@ window.ssd headerbar.titlebar {
 /* NOTE(imran): Remove rounded corners */
 .titlebar,
 .titlebar .background,
-decoration,
 window,
 window.background {
+	border-radius: 0;
+}
+window decoration {
 	border-radius: 0;
 }
 
