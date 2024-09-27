@@ -3,7 +3,7 @@
 # usage: (for google search)
 # gg candy crush
 
-sources_file="$HOME/scripts/dmenu-websearch-sources"
+sources_file="$HOME/scripts/dmenu_websearch_sources"
 
 prompt="-p Search:"
 
