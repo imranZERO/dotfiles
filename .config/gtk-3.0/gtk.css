@@ -1,28 +1,26 @@
-
 /* NOTE(imran): window close button pain */
 headerbar {
-  /* padding-right: 0; */
-  padding-right: 4px;
-  padding-left: 4px;
+	padding-right: 4px;
+	padding-left: 4px;
 }
-/* .titlebutton { */
-/*   padding: 2px; */
-/*   margin: 0; */
-/* } */
 
 /* NOTE(imran): window title bar thickness */
 window.ssd headerbar.titlebar {
-    padding-top: 2px;
-    padding-bottom: 3px;
-    min-height: 0;
+	padding-top: 2px;
+	padding-bottom: 3px;
+	min-height: 0;
 }
 
-/* window.ssd headerbar.titlebar button.titlebutton { */
-/*     padding: 1px; */
-/*     min-height: 0; */
-/*     min-width: 0; */
-/* } */
+/* NOTE(imran): Remove rounded corners */
+.titlebar,
+.titlebar .background,
+decoration,
+window,
+window.background {
+	border-radius: 0;
+}
 
 scrollbar slider {
-min-width: 6px;
-min-height: 6px;}
+	min-width: 6px;
+	min-height: 6px;
+}
