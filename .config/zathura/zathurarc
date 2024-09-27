@@ -1,0 +1,26 @@
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+# set page-padding 1
+set adjust-open "best-fit"
+
+set scroll-step 300
+set selection-notification false
+
+set statusbar-fg "#B0B1B0"
+set statusbar-bg "#202020"
+
+map u scroll half-up
+map d scroll half-down
+map D toggle_page_mode
+map r reload
+map R rotate
+map K zoom in
+map J zoom out
+map i recolor
+
+map <F1> toggle_index
+map <F2> toggle_statusbar
+
+unmap f
+map f toggle_fullscreen
+map [fullscreen] f toggle_fullscreen
