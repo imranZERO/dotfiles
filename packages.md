@@ -1,8 +1,11 @@
 ## PACMAN
 
+nvidia-open
+nvidia-settings
 kitty
 fzf
 ripgrep repgrep
+fd
 gvim
 nodejs
 php composer php-sqlite
@@ -10,13 +13,15 @@ go
 mpv
 celluloid
 yt-dlp
-gnome-calculator
+bc
+qalculate-gtk
 gnome-screenshot
 gnome-disk-utility
 gnome-font-viewer
 firefox
 syncthing
 android-tools
+scrcpy
 copyq
 eza
 bat less
@@ -28,6 +33,7 @@ tokei
 xcolor
 xclip
 imagemagick libheif libwebp
+kimageformats
 atool p7zip
 file-roller
 nemo-fileroller
@@ -49,13 +55,16 @@ ttf-nerd-fonts-symbols
 
 ## AUR
 
+yay
 brave-bin
+git-credential-manager-bin
 qview
 xnviewmp
 qpdfview
 fsearch
 localsend-bin
 parsec-bin
+tlrc-bin
 ttf-ms-win10-auto
 ttf-freebanglafont
 
