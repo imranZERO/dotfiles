@@ -5,11 +5,11 @@ vim9script
 # O------------------------------------------------------------------O
 set nocompatible encoding=utf-8 hidden confirm secure exrc
 \ noswapfile nobackup fileformats=unix,dos nrformats-=octal
-\ nomodeline noshowmode hlsearch incsearch shortmess+=I shortmess-=S
+\ hlsearch incsearch belloff=all shortmess+=I shortmess-=S
 \ titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:~:.:h\")}/)%)\ %{getcwd()}
-\ autoread ttyfast lazyredraw notimeout ttimeout ttimeoutlen=200 belloff=all
-\ termguicolors mouse=a laststatus=2 showtabline=1 foldcolumn=1 linespace=0
-\ nonumber numberwidth=5 fillchars=vert:\│, cursorlineopt=both
+\ autoread lazyredraw notimeout ttimeout ttimeoutlen=200
+\ termguicolors noshowmode laststatus=2 foldcolumn=1
+\ nonumber numberwidth=5 fillchars=vert:\│, mouse=a
 \ ignorecase smartcase nostartofline splitbelow splitright
 \ scrolloff=6 sidescrolloff=12 sidescroll=1 smoothscroll
 \ wildmenu wildmode=full wildoptions=fuzzy,pum,tagfile
@@ -37,6 +37,15 @@ def Load_Plugins(t: number)
     packadd asyncdo.vim                 # hauleth/asyncdo.vim
         command! -bang -nargs=* -complete=file Make
         \ asyncdo#run(<bang>0, &makeprg, <f-args>)
+    packadd vim-polyglot                # sheerun/vim-polyglot
+        # command! -bar -nargs=* Retab set ts=4 sw=4 sts=4 et | retab
+    packadd vim-prettier                # prettier/vim-prettier
+        if has("win32")
+            g:prettier#exec_cmd_path = "~/vimfiles/pack/dist/opt/vim-prettier/node_modules/.bin/prettier"
+        else
+            g:prettier#exec_cmd_path = "~/.config/vim/pack/dist/opt/vim-prettier/node_modules/.bin/prettier"
+        endif
+        g:prettier#config#use_tabs = 'true'
     packadd vim-slime                   # jpalardy/vim-slime
         g:slime_target = "vimterminal"
     packadd rainbow_parentheses.vim     # junegunn/rainbow_parentheses
@@ -44,17 +53,11 @@ def Load_Plugins(t: number)
             autocmd FileType * RainbowParentheses
             # autocmd FileType lisp,clojure,scheme RainbowParentheses
         augroup end
-    packadd vim-polyglot                # sheerun/vim-polyglot
-        command! -bar -nargs=* Retab set ts=4 sw=4 sts=4 et | retab
-    packadd vim-prettier                # prettier/vim-prettier
-        # g:prettier#exec_cmd_path = "~/vimfiles/pack/dist/opt/vim-prettier/node_modules/.bin/prettier"
-        g:prettier#exec_cmd_path = "~/.config/vim/pack/dist/opt/vim-prettier/node_modules/.bin/prettier"
-        g:prettier#config#use_tabs = 'true'
-    packadd emmet-vim                   # mattn/emmet-vim
+    packadd vim-commentary              # tpope/vim-commentary
     packadd vim-surround                # tpope/vim-surround
     packadd vim-repeat                  # tpope/vim-repeat
+    packadd emmet-vim                   # mattn/emmet-vim
     packadd multiterm.vim               # chengzeyi/multiterm.vim
-    packadd vim-commentary              # tpope/vim-commentary
     packadd vim-dir                     # habamax/vim-dir
     packadd smartpairs.vim              # imranzero/smartpairs.vim
     if has("gui_win32")
@@ -190,10 +193,13 @@ if has("gui_running")
         elseif result ==  8
             if has("gui_win32")   | set linespace=1 guifont=Victor_Mono:h11
             elseif has("gui_gtk") | set linespace=1 guifont=Victor\ Mono\ Medium\ 12 | endif
-        elseif result ==  9 | set linespace=0 guifont=FixedSys
+        elseif result ==  9
+            if has("gui_win32")   | set linespace=1 guifont=Go_Mono:h11
+            elseif has("gui_gtk") | set linespace=1 guifont=Go\ Mono\ Regular\ 12 | endif
+        elseif result ==  10 | set linespace=0 guifont=FixedSys
         endif
     enddef
-    FontMenu(0, 6)
+    FontMenu(0, 9)
 
     g:ScrollBar = 1
     set guioptions=!icr
@@ -227,11 +233,15 @@ def Menuhandler(id: number, result: number)
         \ 'JetBrains Mono',
         \ 'Comic Mono',
         \ 'Victor Mono',
+        \ 'Go Mono',
         \ 'FixedSys'],
         \ {filter: 'PopupMenuFilter', callback: 'FontMenu', title: 'Fonts'})
     elseif result == 4 | ColorSchemeMenu()
     elseif result == 5 | DistractionFree()
-    # elseif result == 6 | Wintweak
+    elseif result == 6
+        if has("gui_win32")
+            Wintweak
+        endif
     endif
 enddef
 
@@ -346,8 +356,8 @@ def g:ColorConfig()
         highlight Cursor guifg=#000000 guibg=#00F700 gui=NONE cterm=NONE
         highlight Terminal guifg=#DAB98F ctermfg=249 guibg=#161616 ctermbg=0
         g:terminal_ansi_colors = [
-            \ "#272822", "#f92672", "#a6e22e", "#f4bf75", "#66d9ef", "#ae81ff", "#a1efe4", "#f8f8f2",
-            \ "#75715e", "#f92672", "#a6e22e", "#f4bf75", "#66d9ef", "#ae81ff", "#a1efe4", "#f9f8f5",]
+            \ "#3d352a", "#cd5c5c", "#86af80", "#e8ae5b", "#6495ed", "#deb887", "#b0c4de", "#bbaa99",
+            \ "#554444", "#cc5533", "#88aa22", "#ffa75d", "#87ceeb", "#996600", "#b0c4de", "#ddccbb",]
     endif
 enddef
 g:ColorConfig()
@@ -367,7 +377,7 @@ def Intro()
     nnoremap <silent><buffer>e :enew<cr>
     nnoremap <silent><buffer>i :enew <bar> startinsert<cr>
 enddef
-Intro()
+# Intro()
 
 g:NetrwIsOpen = 0
 def ToggleNetrw()
@@ -426,6 +436,13 @@ def AlignLine(line: string, sep: string, maxpos: number, extra: number): string
     endif
     var spaces = repeat(' ', maxpos - strlen(m[1]) + extra)
     return m[1] .. spaces .. m[2]
+enddef
+
+# Set tab width to n spaces
+command! -nargs=1 SetTab SetTab(<args>)
+def SetTab(n: number)
+    &tabstop = n | &softtabstop = n | &shiftwidth = n
+    set noexpandtab
 enddef
 
 def ToggleIndentGuides()
@@ -524,13 +541,6 @@ enddef
 def LineHighlight()
     highlight LineHighlight guifg=black guibg=white
     matchadd('LineHighlight', '\%' .. line('.') .. 'l')
-enddef
-
-# Set tab width to n spaces
-command! -nargs=1 SetTab SetTab(<args>)
-def SetTab(n: number)
-    &tabstop = n | &softtabstop = n | &shiftwidth = n
-    set noexpandtab
 enddef
 
 def g:FileSize(): string
