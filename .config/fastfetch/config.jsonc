@@ -4,7 +4,8 @@
     {
         "padding":
         {
-            "top": 7
+            "left": 2,
+            "top": 3
         }
     },
     "general":
@@ -13,60 +14,36 @@
     },
     "display":
     {
-        "separator": "➜    "
+        // "separator": "➜    "
+        "separator": ""
     },
     "modules":
     [
-        {
-            "type": "title",
-            "key": "{icon}  User                 ",
-            "keyColor": "blue"
-        },
         "break",
         {
             "type": "host",
             "key": "{icon}  System               ",
             "keyColor": "blue",
-            "outputColor": "bright_magenta"
         },
-        {
-            "type": "bios",
-            "key": "{icon}  Firmware             ",
-            "keyColor": "blue"
-        },
-        {
-            "type": "os",
-            "key": "{icon}  Operating System     ",
-            "keyColor": "blue",
-            "outputColor": "bright_cyan"
-        },
-        {
-            "type": "kernel",
-            "key": "{icon}  Kernel               ",
-            "keyColor": "blue",
-            "outputColor": "bright_yellow"
-        },
+        // {
+        //     "type": "bios",
+        //     "key": "{icon}  Firmware             ",
+        //     "keyColor": "blue"
+        // },
         {
             "type": "cpu",
+            "format": "{name} x{cores-logical} - {temperature}",
             "key": "{icon}  Processor            ",
             "keyColor": "blue",
-            "outputColor": "bright_red",
-            "temp":
-            {
+            "temp": {
                 "green": 55,
                 "yellow": 70
             }
         },
-        // {
-        //     "type": "cpucache",
-        //     "key": "{icon}  Cache                ",
-        //     "keyColor": "blue"
-        // },
         {
             "type": "gpu",
             "key": "{icon}  Graphic Card         ",
             "keyColor": "blue",
-            "outputColor": "bright_cyan",
             "temp":
             {
                 "green": 55,
@@ -92,24 +69,23 @@
             "type": "disk",
             "key": "{icon}  Hard Drive           ",
             "keyColor": "blue",
-            "outputColor": "bright_cyan"
         },
         "break",
-        {
-            "type": "packages",
-            "key": "{icon}  Installed Packages   ",
-            "keyColor": "blue"
-        },
         {
             "type": "shell",
             "key": "{icon}  Shell                ",
             "keyColor": "blue"
         },
         {
+            "type": "terminal",
+            "key": "{icon}  Terminal             ",
+            "format": "{pretty-name} {version} {#37}█{#97}█ {#36}█{#96}█ {#35}█{#95}█ {#34}█{#94}█ {#33}█{#93}█ {#32}█{#92}█ {#31}█{#91}█ {#30}█{#90}█",
+            "keyColor": "blue"
+        },
+        {
             "type": "de",
             "key": "{icon}  Desktop Environment  ",
             "keyColor": "blue",
-            "outputColor": "bright_magenta"
         },
         {
             "type": "wm",
@@ -137,20 +113,15 @@
             "keyColor": "blue"
         },
         {
-            "type": "cursor",
-            "key": "{icon}  Mouse Cursor         ",
+            "type": "terminalfont",
+            "key": "{icon}  Terminal Font        ",
             "keyColor": "blue"
         },
-        {
-            "type": "terminal",
-            "key": "{icon}  Terminal             ",
-            "keyColor": "blue"
-        },
-        {
-            "type": "localip",
-            "key": "{icon}  IP Address           ",
-            "keyColor": "blue"
-        },
+        // {
+        //     "type": "cursor",
+        //     "key": "{icon}  Mouse Cursor         ",
+        //     "keyColor": "blue"
+        // },
         {
             "type": "battery",
             "key": "{icon}  Battery              ",
@@ -161,14 +132,47 @@
             "key": "{icon}  Power Adapter        ",
             "keyColor": "blue"
         },
+        "break",
+        {
+            "type": "title",
+            "key": "{icon}  User                 ",
+            "format": "{user-name}@{host-name}",
+            "keyColor": "blue"
+        },
+        {
+            "type": "os",
+            "key": "{icon}  Operating System     ",
+            "keyColor": "blue",
+        },
+        {
+            "type": "kernel",
+            "key": "{icon}  Kernel               ",
+            "keyColor": "blue",
+        },
+        {
+            "type": "packages",
+            "key": "{icon}  Installed Packages   ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "processes",
+            "key": "{icon}  Processes            ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "localip",
+            "key": "{icon}  Local IP             ",
+            "keyColor": "blue"
+        },
+        // {
+        //     "type": "publicip",
+        //     "key": "{icon}  Public IP            ",
+        //     "keyColor": "blue",
+        // },
         {
             "type": "locale",
             "key": "{icon}  Locale               ",
             "keyColor": "blue"
-        },
-        {
-            "type": "break",
-            "key": "{icon}"
         },
         {
             "type": "datetime",
@@ -179,7 +183,6 @@
             "type": "uptime",
             "key": "{icon}  Uptime               ",
             "keyColor": "blue",
-            "outputColor": "bright_red"
         },
         {
             "type": "command",
@@ -187,11 +190,5 @@
             "keyColor": "blue",
             "text": "echo \"$(( ($(date +%s) - $(stat -c%W /)) / 86400 ))\" days"
         },
-        {
-            "type": "break",
-            "key": "{icon}",
-            "keyColor": "blue"
-        },
-        "colors"
     ]
 }
