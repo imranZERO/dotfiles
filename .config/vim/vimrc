@@ -310,10 +310,9 @@ enddef
 g:gruvbox_invert_selection = '0' #| g:gruvbox_italic = '0'
 g:gruvbox_contrast_light = 'hard' | g:gruvbox_contrast_dark = 'medium'
 
-colorscheme gruvbox | &bg = 'dark'
+# colorscheme gruvbox | &bg = 'dark'
 # colorscheme hybrid | &bg = 'dark'
-# colorscheme flattened | &bg = 'light'
-# colorscheme cake16 | &bg = 'light'
+colorscheme flattened | &bg = 'light'
 # colorscheme zengarden | &bg = 'light' #| if has('gui_running') | ToggleBoldFont() | endif
 
 def ColorSchemeMenu()
@@ -346,13 +345,17 @@ def g:ColorConfig()
     augroup TERMINAL_STATUSLINE | autocmd!
         autocmd TerminalWinOpen * setlocal statusline=%#StatusLine#\ %{g:cmode[mode()]}\ %#StatusLineNC#\ %.60f
     augroup end
+
     if &bg == "light"
+        $BAT_THEME = "gruvbox-light"
         highlight Cursor guifg=#FFFFFF guibg=#000000 gui=NONE
-        highlight Terminal guifg=#3C3836 ctermfg=249 guibg=#EBDBB2 ctermbg=0
+        # highlight Terminal guifg=#3C3836 ctermfg=249 guibg=#EBDBB2 ctermbg=0
+        highlight Terminal guifg=#3C3836 ctermfg=249 guibg=#fdf6e3 ctermbg=0
         g:terminal_ansi_colors = [
             \ "#774f38", "#b95942", "#308444", "#996e1f", "#50707e", "#aa56b2", "#308090", "#ede4d4",
             \ "#878787", '#f10000', '#82a3b3', '#B95942', '#678797', '#afafaf', '#afafaf', '#f7efdf',]
     else
+        $BAT_THEME = "gruvbox-dark"
         highlight Cursor guifg=#000000 guibg=#00F700 gui=NONE cterm=NONE
         highlight Terminal guifg=#DAB98F ctermfg=249 guibg=#161616 ctermbg=0
         g:terminal_ansi_colors = [
