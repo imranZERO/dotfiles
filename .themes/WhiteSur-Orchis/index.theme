@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=X-GNOME-Metatheme
-Name=WhiteSur-Dark
-Comment=A MacOS BigSur like Gtk+ theme based on Elegant Design
+Name=WhiteSur-Orchis
+Comment=A custom theme with WhiteSur-Dark as the application theme and Orchis-Dark as the cinnamon theme.
 Encoding=UTF-8
 
 [X-GNOME-Metatheme]
