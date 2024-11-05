@@ -11,3 +11,4 @@ sudo ufw allow 53317/tcp
 
 # Unified Remote server
 sudo ufw allow 9512/tcp
+sudo ufw allow 9512/udp
