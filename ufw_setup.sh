@@ -12,3 +12,7 @@ sudo ufw allow 53317/tcp
 # Unified Remote server
 sudo ufw allow 9512/tcp
 sudo ufw allow 9512/udp
+
+# KDE Connect Server
+sudo ufw allow 1714:1764/tcp
+sudo ufw allow 1714:1764/udp
