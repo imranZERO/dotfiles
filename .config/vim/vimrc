@@ -310,9 +310,9 @@ enddef
 g:gruvbox_invert_selection = '0' #| g:gruvbox_italic = '0'
 g:gruvbox_contrast_light = 'hard' | g:gruvbox_contrast_dark = 'medium'
 
-# colorscheme gruvbox | &bg = 'dark'
+colorscheme gruvbox | &bg = 'dark'
 # colorscheme hybrid | &bg = 'dark'
-colorscheme flattened | &bg = 'light'
+# colorscheme flattened | &bg = 'light'
 # colorscheme zengarden | &bg = 'light' #| if has('gui_running') | ToggleBoldFont() | endif
 
 def ColorSchemeMenu()
@@ -794,9 +794,18 @@ vnoremap <c-j> :m '>+1<cr>gv=gv
 vnoremap <c-k> :m '<-2<cr>gv=gv
 
 # Access to system clipboard
-xnoremap <space>y "+y
-nnoremap <space>p "+p
-nnoremap <space>P "+P
+if $XDG_SESSION_TYPE == 'wayland'
+    xnoremap "+y y:call system("wl-copy", @")<cr>
+    nnoremap "+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<cr>p
+    nnoremap "*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<cr>p
+
+    xmap <space>y "+y
+    nmap <space>p "+p
+else
+    xnoremap <space>y "+y
+    nnoremap <space>p "+p
+    nnoremap <space>P "+P
+endif
 tnoremap <s-insert> <c-w>"+
 tnoremap <c-v> <c-w>"+
 
