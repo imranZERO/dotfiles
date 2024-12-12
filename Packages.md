@@ -1,11 +1,13 @@
-## DNF
+## DNF (Fedora with KDE)
 
 akmod-nvidia xorg-x11-drv-nvidia-cuda
 libva-nvidia-driver nvtop
+nvidia-vaapi-driver libva-utils vdpauinfo
 @virtualization
 git git-credential-oauth
 fzf
 kitty
+bemenu
 nodejs
 go
 php composer
@@ -17,14 +19,16 @@ btop
 syncthing
 qalculate-gtk
 gnome-font-viewer
+gnome-disk-utility
 android-tools
 xdotool
 wl-clipboard
 mousepad
 qview
-qpdfview-qt6
+qt-heif-image-plugin libheif-freeworld
+mpv vlc
+ffmpeg --allowerasing
 zathura zathura-pdf-mupdf
-wl-clipboard
 xclip
 fastfetch
 copyq
@@ -47,8 +51,9 @@ onefetch
 qstardict
 mame
 tldr
+sl
 
-## PACMAN
+## PACMAN (Arch with Cinnamon)
 
 linux-lts
 linux-lts-headers
@@ -135,8 +140,9 @@ ttf-freebanglafont
 ## FLATPAK
 
 com.github.tchx84.Flatseal
-io.missioncenter.MissionCenter
+org.localsend.localsend_app
 md.obsidian.Obsidian
+io.missioncenter.MissionCenter
 ca.desrt.dconf-editor
 it.mijorus.gearlever
 com.github.AmatCoder.mednaffe
@@ -144,14 +150,11 @@ com.github.tenderowl.frog
 com.parsecgaming.parsec
 com.protonvpn.www
 com.xnview.XnViewMP
+io.gitlab.adhami3310.Impression
 dev.bragefuglseth.Keypunch
 io.github.cboxdoerfer.FSearch
 io.github.giantpinkrobots.flatsweep
 org.gnome.baobab
 org.gnome.gitlab.somas.Apostrophe
-org.localsend.localsend_app
+de.haeckerfelix.AudioSharing
 page.kramo.Sly
-
-## SOURCE
-
-[dmenu-distrotube](https://gitlab.com/dwt1/dmenu-distrotube)

@@ -12,7 +12,7 @@ export HISTFILESIZE=10000
 # PS1='[\u@\h \W]\$ '
 PS1="\[\e[32m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]@\[\e[32m\]\h \[\e[m\]\[\e[33m\]\w\[\e[m\]\[\e[32m\]]\[\e[m\]\\$ "
 
-# stty -ixon  # Disable Ctrl-S and Ctrl-Q
+stty -ixon  # Disable Ctrl-S and Ctrl-Q
 shopt -s autocd
 
 # fzf integration
@@ -60,19 +60,37 @@ function yy() {
 #   node $@
 # }
 
+
 alias ..='cd ..'
 alias ...='cd ../..'
 alias cls='clear'
+
+alias sudo='sudo -E'
+
+alias rm='rm -i'
+alias mv='mv -i'
+
 alias ls='eza'
 alias ll='eza -lah --group-directories-first --color=always --icons=always --git'
-alias gc='git clone --depth=1'
+
 alias v='vim'
 alias sv='sudo vim'
-alias cloc='tokei'
-alias icat='kitten icat'
+
+alias gs='git status'
+alias gc='git clone --depth=1'
+
 alias ff='fastfetch'
-alias starwars='telnet towel.blinkenlights.nl'
+alias icat='kitten icat'
+alias cloc='tokei'
+alias pyserve='python -m http.server'
+alias tl="tldr --list | fzf --preview 'tldr {} --color always' | xargs tldr"
+alias pwr='echo "$(energy1=$(sudo cat /sys/class/powercap/intel-rapl:0/energy_uj)
+	sleep 1; energy2=$(sudo cat /sys/class/powercap/intel-rapl:0/energy_uj)
+	echo "scale=6; ($energy2 - $energy1) / 1000000" | bc | sed "s/^-//") watts"'
+alias wttr='curl wttr.in/?nQF1'
 
-export PATH="$HOME/scripts:$PATH"
 
-# colorscript random
+export EDITOR=vim
+export MANPAGER='vim -M +MANPAGER "+set ft=man" -'
+
+export PATH="$HOME/scripts:$HOME/.config/emacs/bin:$PATH"
