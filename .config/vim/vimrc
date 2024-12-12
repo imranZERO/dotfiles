@@ -795,9 +795,9 @@ vnoremap <c-k> :m '<-2<cr>gv=gv
 
 # Access to system clipboard
 if $XDG_SESSION_TYPE == 'wayland'
-    xnoremap "+y y:call system("wl-copy", @")<cr>
-    nnoremap "+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<cr>p
-    nnoremap "*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<cr>p
+    xnoremap <silent>"+y y:call system("wl-copy", @")<cr>
+    nnoremap <silent>"+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<cr>p
+    nnoremap <silent>"*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<cr>p
 
     xmap <space>y "+y
     nmap <space>p "+p
