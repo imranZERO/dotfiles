@@ -51,7 +51,7 @@ se_data="$(
 eval "$se_data"
 
 # Output label string to rofi...
-search="$(dmenu $prompt -l 15 <<< $dmenu_labels)"
+search="$(bemenu $prompt $(<~/scripts/bemenu_config) <<< $dmenu_labels)"
 
 if [[ ! -z "$search" ]]; then
 

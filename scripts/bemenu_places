@@ -4,11 +4,11 @@ prompt="-p Path:"
 root_path="$HOME"
 
 find_path="$(find $root_path -maxdepth 3 -type d | \
-             sed 's|^'$root_path/'||' | \
-             dmenu -i $prompt -l 15)"
+			 sed 's|^'$root_path/'||' | \
+			 bemenu $(<~/scripts/bemenu_config) $prompt)"
 
 if [[ ! -z "$find_path" ]]; then
-    nemo "$find_path"
+	xdg-open "$find_path"
 fi
 
 exit 0

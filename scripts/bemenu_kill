@@ -1,0 +1,18 @@
+#!/bin/bash
+
+selected="$(ps -a -u $USER | \
+			bemenu -i -p "Search and select process to kill" $(<~/scripts/bemenu_config) | \
+			awk '{print $1" "$4}')";
+
+if [[ ! -z $selected ]]; then
+
+	answer="$(echo -e "Yes\nNo" | \
+			bemenu -i -p "$selected will be killed, are you sure?" $(<~/scripts/bemenu_config) )"
+
+	if [[ $answer == "Yes" ]]; then
+		selpid="$(awk '{print $1}' <<< $selected)";
+		kill -9 $selpid
+	fi
+fi
+
+exit 0

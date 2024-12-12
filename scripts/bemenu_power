@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Define options
+options="Cancel\nLock Screen\nSleep\nLogout\nShutdown\nReboot"
+
+# Display the menu using bemenu
+choice=$(echo -e "$options" | bemenu -p "Power Menu:" $(<~/scripts/bemenu_config))
+
+# Execute the chosen option
+case $choice in
+	"Cancel")
+		exit 0
+		;;
+	"Lock Screen")
+		loginctl lock-session
+		;;
+	"Sleep")
+		systemctl suspend
+		;;
+	"Logout")
+		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to logout?" | grep -q "Yes"; then
+			loginctl terminate-session
+		fi
+		;;
+	"Shutdown")
+		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to shutdown?" | grep -q "Yes"; then
+			systemctl poweroff
+		fi
+		;;
+	"Reboot")
+		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to reboot?" | grep -q "Yes"; then
+			systemctl reboot
+		fi
+		;;
+	*)
+		exit 1
+		;;
+esac
