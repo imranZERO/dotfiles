@@ -16,3 +16,6 @@ sudo ufw allow 9512/udp
 # KDE Connect Server
 sudo ufw allow 1714:1764/tcp
 sudo ufw allow 1714:1764/udp
+
+# RTSP audio sharing with - https://flathub.org/apps/de.haeckerfelix.AudioSharing
+sudo ufw allow 8554
