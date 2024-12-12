@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Play YouTube Link
+Comment=Plays a YouTube link from the clipboard using MPV
+Exec=/home/imran/scripts/yt.sh
+Icon=/home/imran/Pictures/icons/yt.png
+Terminal=false
+Type=Application
+Categories=AudioVideo;Video;Utility;
+Keywords=YouTube;MPV;Clipboard;Play;
