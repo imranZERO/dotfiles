@@ -25,6 +25,20 @@ set nocompatible encoding=utf-8 hidden confirm secure exrc
 # O------------------------------------------------------------------O
 # Non-deferred loading
 packadd coc.nvim                        # neoclide/coc.nvim
+# packadd lsp                             # yegappan/lsp
+#     call LspAddServer([{
+#         \    name: 'typescriptlang',
+#         \    filetype: ['javascript', 'typescript'],
+#         \    path: 'typescript-language-server',
+#         \    args: ['--stdio'],
+#         \  }])
+#     call LspAddServer([{
+#         \    name: 'golang',
+#         \    filetype: ['go', 'gomod'],
+#         \    path: $HOME .. '/go/bin/gopls',
+#         \    args: ['serve'],
+#         \    syncInit: v:true
+#         \  }])
 
 # Deferred loading
 def Load_Plugins(t: number)
@@ -140,6 +154,7 @@ def Run()
 enddef
 
 def Format()
+    exec "update"
     if &ft == 'c' || &ft == 'cpp' | set makeprg=astyle
         var a1 = "--style=kr --indent=tab --convert-tabs --break-blocks --pad-oper --pad-header"
         var a2 = "--unpad-paren --align-pointer=name --attach-return-type --indent-preproc-block"
@@ -154,6 +169,7 @@ enddef
 
 def Build()
     if !empty(expand(glob("makefile")))
+        exec "update"
         set makeprg=make | exec "Make!" | # ! prevents jumping to location of first error
     endif
 enddef
@@ -171,34 +187,44 @@ if has("gui_running")
     enddef
 
     def FontMenu(id: number, result: number)
-        if     result ==  1 | ToggleBoldFont()
-        elseif result ==  2
-            if has("gui_win32")   | set linespace=1 guifont=Consolas:h11
-            elseif has("gui_gtk") | set linespace=1 guifont=Consolas\ 12 | endif
-        elseif result ==  3
-            if has("gui_win32")   | set linespace=1 guifont=Terminus_(TTF)_for_Windows:h11
-            elseif has("gui_gtk") | set linespace=1 guifont=Terminus\ (TTF)\ Medium\ 12 | endif
-        elseif result ==  4
-            if has("gui_win32")   | set linespace=0 guifont=Fira_Mono:h11
-            elseif has("gui_gtk") | set linespace=0 guifont=Fira\ Mono\ 12 | endif
-        elseif result ==  5
-            if has("gui_win32")   | set linespace=1 guifont=Iosevka_Fixed:h11
-            elseif has("gui_gtk") | set linespace=1 guifont=Iosevka\ Fixed\ SS14\ 12 | endif
-        elseif result ==  6
-            if has("gui_win32")   | set linespace=0 guifont=Jetbrains_Mono_NL_Regular:h11
-            elseif has("gui_gtk") | set linespace=0 guifont=Jetbrains\ Mono\ NL\ Regular\ 12 | endif
-        elseif result ==  7
-            if has("gui_win32")   | set linespace=1 guifont=Comic_Mono
-            elseif has("gui_gtk") | set linespace=1 guifont=Comic\ Mono | endif
-        elseif result ==  8
-            if has("gui_win32")   | set linespace=1 guifont=Victor_Mono:h11
-            elseif has("gui_gtk") | set linespace=1 guifont=Victor\ Mono\ Medium\ 12 | endif
-        elseif result ==  9
-            if has("gui_win32")   | set linespace=1 guifont=Go_Mono:h11
-            elseif has("gui_gtk") | set linespace=1 guifont=Go\ Mono\ Regular\ 12 | endif
-        elseif result ==  10 | set linespace=0 guifont=FixedSys
+        if         result ==  1 | ToggleBoldFont()
+			elseif result ==  2
+				if has("gui_win32")   | set linespace=1 guifont=Consolas:h11
+				elseif has("gui_gtk") | set linespace=1 guifont=Consolas\ 12
+				endif
+			elseif result ==  3
+				if has("gui_win32")   | set linespace=1 guifont=Terminus_(TTF)_for_Windows:h11
+				elseif has("gui_gtk") | set linespace=1 guifont=Terminus\ (TTF)\ Medium\ 12
+				endif
+			elseif result ==  4
+				if has("gui_win32")   | set linespace=0 guifont=Fira_Mono:h11
+				elseif has("gui_gtk") | set linespace=0 guifont=Fira\ Mono\ 12
+				endif
+			elseif result ==  5
+				if has("gui_win32")   | set linespace=1 guifont=Iosevka_Fixed:h11
+				elseif has("gui_gtk") | set linespace=1 guifont=Iosevka\ Fixed\ SS14\ 12
+				endif
+			elseif result ==  6
+				if has("gui_win32")   | set linespace=0 guifont=Jetbrains_Mono_NL_Regular:h11
+				elseif has("gui_gtk") | set linespace=0 guifont=Jetbrains\ Mono\ NL\ Regular\ 12
+				endif
+			elseif result ==  7
+				if has("gui_win32")   | set linespace=1 guifont=Comic_Mono
+				elseif has("gui_gtk") | set linespace=1 guifont=Comic\ Mono
+				endif
+			elseif result ==  8
+				if has("gui_win32")   | set linespace=1 guifont=Victor_Mono:h11
+				elseif has("gui_gtk") | set linespace=1 guifont=Victor\ Mono\ Medium\ 12
+				endif
+			elseif result ==  9
+				if has("gui_win32")   | set linespace=1 guifont=Go_Mono:h11
+				elseif has("gui_gtk") | set linespace=1 guifont=Go\ Mono\ Regular\ 12
+				endif
+			elseif result ==  10
+				set linespace=0 guifont=FixedSys
         endif
     enddef
+
     FontMenu(0, 9)
 
     g:ScrollBar = 1
@@ -753,10 +779,11 @@ nnoremap <silent><c-f> <ScriptCmd>SmoothScroll('d', &scroll * 2, 0, 4)<cr>
 nnoremap <space>G <Cmd>w<cr>
 nnoremap <silent><space>q :q<cr>
 tnoremap <silent><c-w>q exit<cr>
-# save and execute command
-nnoremap <F5> :w<cr> \| <ScriptCmd>silent Run()<cr>
-nnoremap <F6> :w<cr> \| <ScriptCmd>silent! Format()<cr>
-nnoremap <F7> :w<cr> \| <ScriptCmd>silent Build()<cr>
+
+nnoremap <F5> <ScriptCmd>silent Run()<cr>
+nnoremap <F6> <ScriptCmd>silent! Format()<cr>
+nnoremap <F7> <ScriptCmd>silent Build()<cr>
+tnoremap <F7> make<cr>
 
 # Swap ` and ' for marks
 nnoremap ' `
@@ -932,6 +959,11 @@ nnoremap <silent><c-Left> :vert res +3<cr>
 nnoremap <silent><c-Right> :vert res -3<cr>
 nnoremap <silent><space>wm <ScriptCmd>ToggleMaximizeSplit(v:true)<cr>
 
+# Multiterm
+nmap <silent><c-z> <Plug>(Multiterm)
+tmap <silent><c-z> <Plug>(Multiterm)
+imap <silent><c-z> <Plug>(Multiterm)
+
 # FZF
 nnoremap <space>r :Rg<cr>
 nnoremap <space>ff :FZF<cr>
@@ -970,9 +1002,6 @@ if has("gui_running")
     nmap <silent><c-ScrollWheelDown> <s-F12>
     nnoremap <silent><space>tb :if ScrollBar == 0 \| let ScrollBar = 1 \| set go+=r \| else \| let ScrollBar = 0 \| set go-=r \| endif<cr>
     nnoremap <silent><space>tg :if &guioptions == '!ic' \| set go=!imTrL \| else \| set go=!ic \| endif<cr>
-    nmap <silent><c-z> <Plug>(Multiterm)
-    tmap <silent><c-z> <Plug>(Multiterm)
-    imap <silent><c-z> <Plug>(Multiterm)
 endif
 nnoremap <silent><F10> <ScriptCmd>popup_menu(['Light/Dark', 'CSS Colors', 'Fonts', 'Colors', 'Zen Mode'],
          \ {filter: 'PopupMenuFilter', callback: 'Menuhandler', title: 'Options'})<cr>
