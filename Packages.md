@@ -1,3 +1,4 @@
+
 ## DNF (Fedora with KDE)
 
 akmod-nvidia xorg-x11-drv-nvidia-cuda
@@ -13,7 +14,7 @@ go
 php composer
 sqlitebrowser
 astyle
-cmake
+cmake cmake-gui
 ufw
 btop
 syncthing
@@ -21,7 +22,7 @@ qalculate-gtk
 gnome-font-viewer
 gnome-disk-utility
 android-tools
-xdotool
+speedtest-cli
 wl-clipboard
 mousepad
 qview
@@ -33,8 +34,9 @@ xclip
 fastfetch
 copyq
 gvim
+neovim neovide
 sublime-text
-code
+zed
 eza
 bat
 fd
@@ -46,12 +48,16 @@ atool
 p7zip
 gitui
 qbittorrent
+navidrome
 mednafen
 onefetch
 qstardict
 mame
 tldr
-sl
+keyd
+mpris-proxy
+openrazer-meta razergenie
+sl cmatrix
 
 ## PACMAN (Arch with Cinnamon)
 
@@ -158,3 +164,7 @@ org.gnome.baobab
 org.gnome.gitlab.somas.Apostrophe
 de.haeckerfelix.AudioSharing
 page.kramo.Sly
+
+## SOURCE
+
+[tt](https://github.com/lemnos/tt)
