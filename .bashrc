@@ -45,22 +45,6 @@ function yy() {
 	rm -f -- "$tmp"
 }
 
-## Node version manager
-# lazy_load_nvm() {
-#   unset -f node nvm
-# 	export NVM_DIR="$HOME/.nvm"
-#   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
-# }
-# node() {
-#   lazy_load_nvm
-#   node $@
-# }
-# nvm() {
-#   lazy_load_nvm
-#   node $@
-# }
-
-
 alias ..='cd ..'
 alias ...='cd ../..'
 alias cls='clear'
@@ -73,11 +57,14 @@ alias mv='mv -i'
 alias ls='eza'
 alias ll='eza -lah --group-directories-first --color=always --icons=always --git'
 
-alias v='vim'
-alias sv='sudo vim'
+alias v='nvim'
+alias sv='sudo nvim'
 
 alias gs='git status'
 alias gc='git clone --depth=1'
+
+alias cp='~/.local/bin/advcp -g'
+alias mv='~/.local/bin/advmv -g'
 
 alias ff='fastfetch'
 alias icat='kitten icat'
@@ -90,7 +77,9 @@ alias pwr='echo "$(energy1=$(sudo cat /sys/class/powercap/intel-rapl:0/energy_uj
 alias wttr='curl wttr.in/?nQF1'
 
 
-export EDITOR=vim
-export MANPAGER='vim -M +MANPAGER "+set ft=man" -'
+export EDITOR=nvim
+export MANPAGER="nvim -c 'Man!' -"
 
-export PATH="$HOME/scripts:$HOME/.config/emacs/bin:$PATH"
+export PATH="$HOME/scripts:$HOME/.local/bin:$PATH"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
