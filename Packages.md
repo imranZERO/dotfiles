@@ -5,6 +5,7 @@ akmod-nvidia xorg-x11-drv-nvidia-cuda
 libva-nvidia-driver nvtop
 nvidia-vaapi-driver libva-utils vdpauinfo
 @virtualization
+bottles
 git git-credential-oauth
 fzf
 kitty
@@ -16,7 +17,7 @@ sqlitebrowser
 astyle
 cmake cmake-gui
 ufw
-btop
+btop iotop
 syncthing
 qalculate-gtk
 gnome-font-viewer
@@ -47,7 +48,7 @@ tokei
 atool
 p7zip
 gitui
-qbittorrent
+transmission-qt qbittorrent
 navidrome
 mednafen
 onefetch
@@ -56,6 +57,7 @@ mame
 tldr
 keyd
 mpris-proxy
+mangohud goverlay
 openrazer-meta razergenie
 sl cmatrix
 
