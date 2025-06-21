@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Nvidia Undervolt
+Comment=Set custom GPU clocks and power limit
+Exec=sudo /home/imran/scripts/undervolt-nvidia-device
+Icon=/usr/share/icons/breeze/preferences/32/preferences-system-power-management.svg
+Terminal=false
+Type=Application
+Categories=Utility;

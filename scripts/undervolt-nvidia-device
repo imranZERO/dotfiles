@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+# https://pypi.org/project/nvidia-ml-py/
+
+from pynvml import *
+from ctypes import byref
+import os
+import subprocess
+
+# Init NVML
+nvmlInit()
+device = nvmlDeviceGetHandleByIndex(0)
+
+# Apply settings
+nvmlDeviceSetGpuLockedClocks(device, 210, 1695)
+nvmlDeviceSetPowerManagementLimit(device, 125000)
+
+info = c_nvmlClockOffset_t()
+info.version = nvmlClockOffset_v1
+info.type = NVML_CLOCK_GRAPHICS
+info.pstate = NVML_PSTATE_0
+info.clockOffsetMHz = 195
+nvmlDeviceSetClockOffsets(device, byref(info))
+
+# Get current limit
+updated_power_limit = nvmlDeviceGetPowerManagementLimit(device) // 1000  # in Watts
+nvmlShutdown()
+
+# Notify user (run as original user)
+user = os.getenv("SUDO_USER") or os.getenv("USER")
+uid = os.getuid() if user == os.getenv("USER") else int(subprocess.getoutput(f"id -u {user}"))
+bus_path = f"/run/user/{uid}/bus"
+
+subprocess.run([
+    "sudo", "-u", user,
+    "env", f"DBUS_SESSION_BUS_ADDRESS=unix:path={bus_path}",
+    "notify-send", "✅ GPU Tuning Applied", f"Power limit set to {updated_power_limit}W"
+])
