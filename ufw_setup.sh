@@ -6,6 +6,9 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw enable
 
+# Local web servers
+sudo ufw allow 8000
+
 # localsend - https://forums.linuxmint.com/viewtopic.php?t=408601
 sudo ufw allow 53317/tcp
 
@@ -19,6 +22,3 @@ sudo ufw allow 1714:1764/udp
 
 # Navidrome Server
 sudo ufw allow 4533
-
-# RTSP audio sharing with - https://flathub.org/apps/de.haeckerfelix.AudioSharing
-sudo ufw allow 8554
