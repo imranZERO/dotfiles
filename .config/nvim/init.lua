@@ -322,6 +322,9 @@ if vim.g.neovide then
 	-- Fix paste
 	vim.keymap.set("c", "<C-S-V>", "<C-R>+")
 	vim.keymap.set({ "n", "i" }, "<S-Insert>", '<Esc>"+p')
+
+	-- Toggle fullscreen
+	vim.keymap.set("n", "<A-CR>", "<Cmd>lua vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen<CR>")
 end
 
 -- Run/execute current buffer
@@ -771,8 +774,8 @@ map("n", "Y", "y$")
 map("n", "<space><CR>", "<Cmd>vert term<CR>i")
 map("n", "<space><S-cr>", "<Cmd>hor term<CR>i")
 map("n", "<space><C-cr>", "<Cmd>tab term<CR>i")
-map("t", "<S-Insert>", '<C-w>+"')
-map("t", "<C-v>", '<C-w>"+')
+map("t", "<S-Insert>", '<C-\\><C-n>"+pi')
+map("t", "<C-v>", '<C-\\><C-n>"+pi')
 
 -- Command Mode Mappings
 map("c", "<C-a>", "<Home>")
@@ -875,9 +878,6 @@ map("n", "<space>tl", function()
 	vim.cmd("set list!")
 end)
 
--- Toggle fullscreen
-map("n", "<A-CR>", "<Cmd>lua vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen<CR>")
-
 -- Toggle light/dark theme
 map("n", "<space>tc", function()
 	vim.o.background = (vim.o.background == "light") and "dark" or "light"
@@ -918,9 +918,3 @@ map("n", "<space>cC", function() ToggleColorColumn(true) end)
 map("n", "<F5>", Run, { silent = true })
 map("n", "<F6>", Format, { silent = true })
 map("n", "<F7>", Build, { silent = true })
-
-
-
-vim.api.nvim_create_user_command("W", function()
-	vim.cmd("write !sudo -S tee % > /dev/null")
-end, { nargs = 0 })
