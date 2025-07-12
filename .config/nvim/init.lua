@@ -101,6 +101,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	{
 		"ibhagwan/fzf-lua",
+		event = "VeryLazy",
 		config = function()
 			require("fzf-lua").setup({
 				winopts = {
@@ -120,6 +121,7 @@ require("lazy").setup({
 			map("n", "<space>fb", "<Cmd>FzfLua buffers<CR>")
 			map("n", "<space>fc", "<Cmd>FzfLua colorschemes<CR>")
 			map("n", "<space>fC", "<Cmd>FzfLua commands<CR>")
+			map("n", "<space>fk", "<Cmd>FzfLua keymaps<CR>")
 			map("n", "<space>fl", "<Cmd>FzfLua lines<CR>")
 			map("n", "<space>fm", "<Cmd>FzfLua marks<CR>")
 			map("n", "<space>fr", "<Cmd>FzfLua registers<CR>")
@@ -133,6 +135,7 @@ require("lazy").setup({
 
 	{
 		"neovim/nvim-lspconfig",
+		event = "VeryLazy",
 		dependencies = {
 			"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
@@ -162,6 +165,7 @@ require("lazy").setup({
 
 	{
 		"saghen/blink.cmp",
+		event = "VeryLazy",
 		dependencies = { "rafamadriz/friendly-snippets" },
 		version = "1.*",
 
@@ -177,6 +181,7 @@ require("lazy").setup({
 
 	{
 		"nvim-treesitter/nvim-treesitter",
+		event = "VeryLazy",
 		build = ":TSUpdate",
 		config = function()
 			require("nvim-treesitter.configs").setup {
@@ -204,25 +209,30 @@ require("lazy").setup({
 	},
 
 	{
-		"nvim-tree/nvim-tree.lua",
-		config = function()
-			require("nvim-tree").setup({
-				view     = { width = 30, side = "right", },
-				renderer = { group_empty = true, },
-				filters  = { dotfiles = false, },
-			})
-			vim.api.nvim_create_autocmd("BufEnter", {
-				pattern = "NvimTree_*",
-				callback = function()
-					vim.opt_local.statusline = " NvimTree "
-				end,
-			})
-			vim.keymap.set("n", "<space>;", "<Cmd>NvimTreeToggle .<CR>")
-		end,
+		"mikavilpas/yazi.nvim",
+		event = "VeryLazy",
+		keys = {
+			{
+				"<space>;",
+				"<cmd>Yazi toggle<cr>",
+				desc = "Resume the last yazi session",
+			},
+			{
+				"<space>:",
+				mode = { "n", "v" },
+				"<cmd>Yazi<cr>",
+				desc = "Open yazi at the current file",
+			},
+		},
+		opts = {
+			floating_window_scaling_factor = 0.92,
+			yazi_floating_window_border = "none",
+		},
 	},
 
 	{
 		"chengzeyi/multiterm.vim",
+		event = "VeryLazy",
 		config = function()
 			vim.keymap.set("n", "<C-z>", "<Plug>(Multiterm)")
 			vim.keymap.set("t", "<C-z>", "<Plug>(Multiterm)")
@@ -232,7 +242,7 @@ require("lazy").setup({
 
 	{
 		"catgoose/nvim-colorizer.lua",
-		event = "BufReadPre",
+		event = "VeryLazy",
 		config = function()
 			require("colorizer").setup({
 				filetypes = {}, -- Don't enable it for any filetype by default
@@ -243,40 +253,41 @@ require("lazy").setup({
 		end,
 	},
 
-	"Mofiqul/vscode.nvim",
-	{
-		"ellisonleao/gruvbox.nvim",
-		config = function()
-			vim.api.nvim_create_autocmd("ColorScheme", {
-				pattern = "gruvbox", -- only runs when loading gruvbox
-				callback = function() vim.api.nvim_set_hl(0, "FoldColumn", { link = "Normal" }) end
-			})
-		end
-	},
+	{ "tpope/vim-commentary",    event = "VeryLazy" },
+	{ "tpope/vim-surround",      event = "VeryLazy" },
+	{ "tpope/vim-repeat",        event = "VeryLazy" },
+	{ "hauleth/asyncdo.vim",     event = "VeryLazy" },
+	{ "mattn/emmet-vim",         event = "VeryLazy" },
+	{ "gosukiwi/vim-smartpairs", event = "VeryLazy" },
+	{ "lambdalisue/suda.vim",    event = "VeryLazy" },
 
-	"tpope/vim-commentary",
-	"tpope/vim-surround",
-	"tpope/vim-repeat",
-	"hauleth/asyncdo.vim",
-	"mattn/emmet-vim",
-	"gosukiwi/vim-smartpairs",
-	"lambdalisue/suda.vim",
+	"Mofiqul/vscode.nvim",
+	"ellisonleao/gruvbox.nvim",
 })
 
 
 -- O---------------------------------------------------------------------------O
--- |  Misc.                                                                    |
+-- |  Appearance                                                               |
 -- O---------------------------------------------------------------------------O
 
 -- Set colorscheme (check safely)
-pcall(vim.cmd, "colorscheme vscode")
+pcall(vim.cmd, "colorscheme gruvbox")
+
+-- These highlit groups are consistent across all colorschemes
+local function GlobalHighlights()
+	vim.schedule(function()
+		vim.api.nvim_set_hl(0, "Cursor", { fg = "#000000", bg = "#00F700" })
+		vim.api.nvim_set_hl(0, "FoldColumn", { link = "Normal" })
+	end)
+end
+vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, { callback = GlobalHighlights })
 
 -- Neovide GUI configuration
 if vim.g.neovide then
 	-- Set font
 	vim.o.guifont = "Iosevka Fixed:h12"
 
-	-- GUI font picker in FZF
+	-- Font picker in FZF
 	local fonts = {
 		"Consolas:h12",
 		"Go Mono:h12",
@@ -298,6 +309,7 @@ if vim.g.neovide then
 		})
 	end
 	vim.api.nvim_create_user_command("FontPickerFzf", FontPickerFzfLua, {})
+	vim.keymap.set("n", "<space>fF", "<Cmd>FontPickerFzf<CR>")
 
 	-- increase/decrease font size
 	vim.api.nvim_set_keymap("n", "<F12>",
@@ -309,15 +321,8 @@ if vim.g.neovide then
 		"return 'h' .. tonumber(n) - 1 end)<CR>", {}
 	)
 
-	vim.opt.guicursor = {
-		"n-v-c:block-Cursor", -- normal/visual/command use 'Cursor' highlight
-		"i-c-ci:hor10-iCursor" -- insert/cmdline-insert use 'iCursor' highlight
-	}
-
-	vim.cmd([[
-		highlight Cursor  guifg=#000000 guibg=#00F700 gui=NONE cterm=NONE
-		highlight iCursor guifg=#000000 guibg=#00F700 gui=NONE cterm=NONE
-	]])
+	vim.opt.guicursor = { "n-v-c:block-Cursor", "i-c-ci:hor10-Cursor" }
+	vim.api.nvim_set_hl(0, "Cursor", { fg = "#000000", bg = "#00F700" })
 
 	-- Fix paste
 	vim.keymap.set("c", "<C-S-V>", "<C-R>+")
@@ -326,6 +331,94 @@ if vim.g.neovide then
 	-- Toggle fullscreen
 	vim.keymap.set("n", "<A-CR>", "<Cmd>lua vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen<CR>")
 end
+
+-- Tabline
+vim.o.tabline = "%!v:lua.Tabline()"
+
+function _G.Tabline()
+	local s = ""
+	for i = 1, vim.fn.tabpagenr('$') do
+		local bufnr = vim.fn.tabpagebuflist(i)[vim.fn.tabpagewinnr(i)]
+		local name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ":t")
+		name = name ~= "" and name or "[No Name]"
+		local hl = (i == vim.fn.tabpagenr()) and "%#StatusLine#" or "%#StatusLineNC#"
+		s = s .. hl .. (" %d: %s "):format(i, name)
+	end
+
+	s = s .. "%#StatusLineNC#%=" -- Highlight & right-align
+
+	local size = math.max(vim.fn.getfsize(vim.api.nvim_buf_get_name(0)), 0)
+	s = s .. "%#StatusLine#" .. (" [%s] [%s] [%.1fKB] "):format(
+		vim.bo.fileformat or "?", vim.bo.fileencoding or "?", size / 1024
+	)
+
+	return s
+end
+
+-- Statusline
+vim.o.statusline = "%!v:lua.Statusline()"
+
+local cmode = {
+	n = "NORMAL",
+	v = "VISUAL",
+	V = "V·LINE",
+	["\22"] = "V·BLOCK",
+	s = "SELECT",
+	S = "S·LINE",
+	i = "INSERT",
+	R = "REPLACE",
+	Rv = "V·REPLACE",
+	c = "COMMAND",
+	r = "PROMPT",
+	t = "TERMINAL"
+}
+
+function _G.Statusline()
+	local s = " "
+	local mode = cmode[vim.fn.mode()] or "UNKNOWN"
+	s = s .. mode .. " "
+	s = s .. "%<" -- Truncate space if too long
+	s = s .. "%#StatusLineNC#" -- Set highlight group
+	s = s .. " %F" -- Show full file path
+	s = s .. " %r%m%h" -- readonly, modified, help
+	s = s .. "%=" -- Right-align the next section
+	if vim.g.asyncdo then s = s .. "[running]" end
+	s = s .. " ≣ %02p%%" -- File position percentage
+	s = s .. " %*" -- Reset highlight
+	s = s .. " %{strlen(&filetype) ? &filetype : 'none'} |" -- Show filetype or "none"
+	s = s .. " %02c:%3l/%L " -- Show column:line/total lines
+	return s
+end
+
+-- Redraw statusline periodically (for AsyncDo [running] indicator)
+local was_active = false
+vim.loop.new_timer():start(0, 1000, vim.schedule_wrap(function()
+	local active = vim.g.asyncdo ~= nil
+	if active or was_active then
+		vim.cmd("redrawstatus")
+	end
+	was_active = active
+end))
+
+
+-- O---------------------------------------------------------------------------O
+-- |  Misc.                                                                    |
+-- O---------------------------------------------------------------------------O
+
+-- Format options
+vim.api.nvim_create_autocmd("BufWinEnter", {
+	callback = function()
+		vim.opt.formatoptions = "jln"
+	end
+})
+
+-- Scratch buffer
+vim.api.nvim_create_user_command("S", function()
+	vim.cmd("vnew")
+	vim.bo.buflisted = false
+	vim.bo.buftype = "nofile"
+	vim.bo.bufhidden = "wipe"
+end, {})
 
 -- Run/execute current buffer
 local function Run()
@@ -389,124 +482,6 @@ local function Build()
 	end
 end
 
--- Tabline & Statusline
-
-local TL = {} -- Store in module-like table
-vim.o.tabline = "%!v:lua.require'tabline'.tabline()"
-
-function TL.tabline()
-	local s = ""
-	for i = 1, vim.fn.tabpagenr('$') do
-		local bufnr = vim.fn.tabpagebuflist(i)[vim.fn.tabpagewinnr(i)]
-		local name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ":t")
-		name = name ~= "" and name or "[No Name]"
-		local hl = (i == vim.fn.tabpagenr()) and "%#StatusLine#" or "%#StatusLineNC#"
-		s = s .. hl .. (" %d: %s "):format(i, name)
-	end
-
-	s = s .. "%#StatusLineNC#%=" -- Highlight & right-align
-
-	local size = math.max(vim.fn.getfsize(vim.api.nvim_buf_get_name(0)), 0)
-	s = s .. "%#StatusLine#" .. (" [%s] [%s] [%.1fKB] "):format(
-		vim.bo.fileformat or "?", vim.bo.fileencoding or "?", size / 1024
-	)
-
-	return s
-end
-
-local SL = {} -- Store in module-like table
-local cmode = {
-	n = "NORMAL",
-	v = "VISUAL",
-	V = "V·LINE",
-	["\22"] = "V·BLOCK",
-	s = "SELECT",
-	S = "S·LINE",
-	i = "INSERT",
-	R = "REPLACE",
-	Rv = "V·REPLACE",
-	c = "COMMAND",
-	r = "PROMPT",
-	t = "TERMINAL"
-}
-vim.o.statusline = "%!v:lua.require'statusline'.statusline()"
-
-function SL.statusline()
-	local s = " "
-	local mode = cmode[vim.fn.mode()] or "UNKNOWN"
-	s = s .. mode .. " "
-	s = s .. "%<" -- Truncate space if too long
-	s = s .. "%#StatusLineNC#" -- Set highlight group
-	s = s .. " %F" -- Show full file path
-	s = s .. " %r%m%h" -- readonly, modified, help
-	s = s .. "%=" -- Right-align the next section
-	if vim.g.asyncdo then s = s .. "[running]" end
-	s = s .. " ≣ %02p%%" -- File position percentage
-	s = s .. " %*" -- Reset highlight
-	s = s .. " %{strlen(&filetype) ? &filetype : 'none'} |" -- Show filetype or "none"
-	s = s .. " %02c:%3l/%L " -- Show column:line/total lines
-	return s
-end
-
--- Redraw statusline periodically (for AsyncDo [running] indicator)
-local was_active = false
-vim.loop.new_timer():start(0, 1000, vim.schedule_wrap(function()
-	local active = vim.g.asyncdo ~= nil
-	if active or was_active then
-		vim.cmd("redrawstatus")
-	end
-	was_active = active
-end))
-
-package.loaded["tabline"] = TL    -- Provide tabline module
-package.loaded["statusline"] = SL -- Provide statusline module
-
--- Scratch buffer
-vim.api.nvim_create_user_command("S", function()
-	vim.cmd("vnew")
-	vim.bo.buflisted = false
-	vim.bo.buftype = "nofile"
-	vim.bo.bufhidden = "wipe"
-end, {})
-
--- Maximize/Restore current window split
-local function ToggleMaximize()
-	local t = vim.t
-	local win = vim.api.nvim_get_current_win()
-
-	if t.restore_zoom and t.restore_zoom.win == win then
-		vim.cmd(t.restore_zoom.cmd)
-		t.restore_zoom = nil
-	else
-		t.restore_zoom = {
-			win = win,
-			cmd = vim.fn.winrestcmd(),
-		}
-		vim.cmd("resize")
-		vim.cmd("vertical resize")
-	end
-end
-
--- Togggle indent guides
-local function ToggleIndentGuides()
-	local ts = vim.o.tabstop
-	if ts == 2 then
-		vim.opt.listchars = { tab = "· ", leadmultispace = "· " }
-	elseif ts == 4 then
-		vim.opt.listchars = { tab = "· ", leadmultispace = "·   " }
-	elseif ts == 8 then
-		vim.opt.listchars = { tab = "· ", leadmultispace = "·       " }
-	end
-	vim.opt.list = not vim.o.list
-end
-
--- Format options
-vim.api.nvim_create_autocmd("BufWinEnter", {
-	callback = function()
-		vim.opt.formatoptions = "jln"
-	end
-})
-
 -- Autocommands for cursorline behaviour
 vim.api.nvim_create_augroup("CURSORLINE", { clear = true })
 local cursorline_events = {
@@ -523,60 +498,6 @@ for _, cmd in ipairs(cursorline_events) do
 			vim.wo.cursorline = cmd.value
 		end,
 	})
-end
-
--- Toggle colorcolumn at cursor position & set vartabstop accordingly
-local function ToggleColorColumn(all)
-	local win, buf = vim.api.nvim_get_current_win(), vim.api.nvim_get_current_buf()
-	local function parse_colorcolumn(str)
-		local cc = {}
-		for val in str:gmatch("([^,]+)") do
-			local num = tonumber(val)
-			if num then table.insert(cc, num) end
-		end
-		return cc
-	end
-
-	if all then
-		local cc = vim.wo[win].colorcolumn
-		if cc == "" then
-			vim.wo[win].colorcolumn = vim.b[buf].cc or "80"
-		else
-			vim.b[buf].cc = cc
-			vim.wo[win].colorcolumn = ""
-		end
-	else
-		local col = vim.fn.virtcol(".")
-		local cc = parse_colorcolumn(vim.wo[win].colorcolumn)
-		local exists = vim.tbl_contains(cc, col)
-
-		if exists then
-			vim.cmd("set colorcolumn-=" .. col)
-		else
-			table.insert(cc, col)
-			table.sort(cc)
-			local cc_str = vim.fn.join(cc, ",")
-			vim.cmd("set colorcolumn=" .. cc_str)
-		end
-	end
-
-	local cc_final = parse_colorcolumn(vim.wo[win].colorcolumn)
-	vim.cmd("setlocal varsofttabstop&")
-	if #cc_final > 1 or (#cc_final == 1 and cc_final[1] < 60) then
-		table.sort(cc_final)
-		local shift = 1
-		for _, v in ipairs(cc_final) do
-			local delta = v - shift
-			if delta > 0 then
-				vim.cmd("setlocal varsofttabstop+=" .. delta)
-				shift = v
-			end
-		end
-		local sw = tonumber(vim.o.shiftwidth)
-		if sw and sw > 0 then
-			vim.cmd("setlocal varsofttabstop+=" .. sw)
-		end
-	end
 end
 
 -- Regex-based text alignment (default: '=')
@@ -625,28 +546,7 @@ end
 vim.api.nvim_create_user_command("A", function() OpenAlternate("edit") end, {})
 vim.api.nvim_create_user_command("AV", function() OpenAlternate("botright vsplit") end, {})
 
--- Turn :t to :tabe and Open :h in new tab
-vim.cmd([[
-	cnoreabbrev <expr> t getcmdtype() == ":" && getcmdline() ==# "t" ? "tabe" : "t"
-	cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() ==# "h" ? "tab help" : "h"
-]])
-
--- Universal opposite of J
-local function BreakHere()
-	local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))    -- Get cursor position
-	local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1] -- Get the current line
-	local indent = line:match("^%s*")                                -- Get indentation
-	local first_part, second_part = line:sub(1, col), line:sub(col + 1) -- Split the line
-
-	-- Set the modified lines
-	vim.api.nvim_buf_set_lines(0, row - 1, row, false, { first_part })
-	vim.api.nvim_buf_set_lines(0, row, row, false, { indent .. second_part })
-
-	vim.api.nvim_win_set_cursor(0, { row + 1, 0 }) -- Move the cursor to the new line
-	vim.fn.histdel("/", -1)                     -- Clear the last search history entry
-end
-
--- Set Tab indet sizes
+-- Set Tab indent sizes
 local function SetTab(n)
 	n = tonumber(n)
 	if n then
@@ -661,30 +561,6 @@ end
 vim.api.nvim_create_user_command("SetTab", function(opts)
 	SetTab(opts.args)
 end, { nargs = 1 })
-
--- Toggle the quickfix window
-local function ToggleQuickfix()
-	if vim.fn.getwininfo(vim.fn.win_getid())[1].quickfix == 1 then
-		vim.cmd("cclose")
-	else
-		vim.cmd("copen")
-	end
-end
-
--- Wipe out all buffers except the current one
-local function WipeHiddenBuffers()
-	local current_bufnr = vim.fn.bufnr("%")        -- Get the current buffer number
-	local buffers = vim.tbl_filter(function(buf)
-		return buf.hidden and buf.bufnr ~= current_bufnr -- Exclude the current buffer
-	end, vim.fn.getbufinfo())
-
-	if #buffers > 0 then
-		local bufnrs = vim.tbl_map(function(buf)
-			return buf.bufnr
-		end, buffers)
-		vim.cmd("confirm bwipeout " .. table.concat(bufnrs, " "))
-	end
-end
 
 -- Remove trailing whitespace and newlines at end of file & reset cursor position
 local function StripWhitespace()
@@ -706,6 +582,32 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	callback = StripWhitespace,
 })
 
+-- Basic smooth scrolling
+function SmoothScroll(dir, dist, duration, speed)
+	local steps = math.floor(dist / speed)
+	local delay = math.floor(duration / steps)
+
+	local i = 0
+	local keys = dir == 'd' and string.rep("<C-e>j", speed) or string.rep("<C-y>k", speed)
+	local feed = vim.api.nvim_replace_termcodes(keys, true, false, true)
+
+	local function step()
+		if i >= steps then return end
+		i = i + 1
+		vim.api.nvim_feedkeys(feed, 'n', false)
+		vim.cmd('redraw')
+		vim.defer_fn(step, delay)
+	end
+
+	step()
+end
+
+-- Turn :t to :tabe and Open :h in new tab
+vim.cmd([[
+	cnoreabbrev <expr> t getcmdtype() == ":" && getcmdline() ==# "t" ? "tabe" : "t"
+	cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() ==# "h" ? "tab help" : "h"
+]])
+
 
 -- O---------------------------------------------------------------------------O
 -- |  Mappings                                                                 |
@@ -713,62 +615,80 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 local map = vim.keymap.set
 
--- <M-x> to :
-map({ "n", "v", "i" }, "<M-x>", "<Esc>:")
+map({ "n", "v", "i" }, "<A-x>", "<Esc>:", { desc = "<M-x> to :" })
 
--- <M-i> to <Esc>
-map({ "n", "v", "i", "t" }, "<M-i>", "<Esc>")
+map({ "n", "v", "i" }, "<A-i>", "<Esc>", { desc = "<A-i> to <Esc>" })
 
--- Save file
-map("n", "<space>G", "<Cmd>w<CR>")
+map("n", "<2-LeftMouse>", "i", { desc = "(double-click) to enter insert mode" })
+map("i", "<2-LeftMouse>", "<Esc>", { desc = "(double-click) to escape insert mode" })
 
--- Quit
-map("n", "<space>q", "<Cmd>q<CR>")
-map("t", "<c-w>q", "<Cmd>exit<CR>")
+map("n", "<space>G", "<Cmd>w<CR>", { desc = "Save file" })
 
--- Switch to previous buffer
-map("n", "<bs>", "<c-6>")
+map("n", "<bs>", "<C-6>", { desc = "Switch to previous buffer" })
 
--- Wipe out all buffers except the current one
-map("n", "<space>bo", WipeHiddenBuffers)
+map("n", "<space>q", "<Cmd>q<CR>", { desc = "Quit" })
+map("t", "<C-w>q", "<Cmd>exit<CR>", { desc = "Quit" })
 
--- Split navigation
-map("n", "<space>w", "<c-w>")
-map("t", "<c-space>", "<C-\\><C-n><c-w>p")
-map("t", "<c-w>N", "<C-\\><C-n>")
-map("n", "<c-space>", "<c-w>w")
+map("n", "<A-j>", "5j", { desc = "Move by 5 lines" })
+map("n", "<A-k>", "5k", { desc = "Move by 5 lines" })
+map("v", "<A-j>", "5j", { desc = "Move by 5 lines" })
+map("v", "<A-k>", "5k", { desc = "Move by 5 lines" })
 
--- Split resizing
-map("n", "<c-Up>", "<Cmd>res +3<CR>")
-map("n", "<c-Down>", "<Cmd>res -3<CR>")
-map("n", "<c-Left>", "<Cmd>vert res +3<CR>")
-map("n", "<c-Right>", "<Cmd>vert res -3<CR>")
-map("n", "<space>wm", ToggleMaximize)
+map("n", "Y", "y$", { desc = "Make Y behave like other capital letters (yank until the end of the line)" })
+map("n", "yc", "yygccp", { remap = true, desc = "Duplicate a line and comment out the first line" })
+map("x", "p", "P", { desc = "Single yank and multiple pastes over selection" })
+map("n", "gp", "`[v`]", { desc = "Reselect the last paste" })
 
--- Map (double-click) to enter insert mode and escape in insert mode
-map("n", "<2-LeftMouse>", "i")
-map("i", "<2-LeftMouse>", "<Esc>")
+map("n", "gh", "0", { desc = "'gh' to the beginning of line" })
+map("n", "gl", "$", { desc = "'gl' to the end of line" })
 
--- Map <M-j> and <M-k> to move by 5 lines
-map("n", "<M-j>", "5j")
-map("n", "<M-k>", "5k")
-map("v", "<M-j>", "5j")
-map("v", "<M-k>", "5k")
+map("n", "'", '`', { desc = "Swap ` and ' for marks" })
+map("n", '`', "'", { desc = "Swap ` and ' for marks" })
 
--- Map `gh` to go to the beginning of the line and `gl` to go to the end
-map("n", "gh", "0")
-map("n", "gl", "$")
+map("n", "c", '"_c', { desc = "Change into void register" })
+map("n", "C", '"_C', { desc = "Change into void register" })
 
--- Swap ` and ' for marks
-map("n", "'", '`')
-map("n", '`', "'")
+map("x", "<", "<gv^", { desc = "Don't lose selection when shifting backward" })
+map("x", ">", ">gv^", { desc = "Don't lose selection when shifting forward" })
 
--- Change into void register
-map("n", "c", '"_c')
-map("n", "C", '"_C')
+map("n", "n", "nzzzv", { desc = "Keep the cursor centered when searching" })
+map("n", "N", "Nzzzv", { desc = "Keep the cursor centered when searching" })
 
--- Make Y behave like other capital letters (yank until the end of the line)
-map("n", "Y", "y$")
+map("v", "<C-j>", ":m '>+1<CR>gv=gv", { desc = "Moving lines in visual mode" })
+map("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Moving lines in visual mode" })
+
+map("n", "<space>ss", ":%s//gc<Left><Left><Left>", { desc = "Search & Replace ('g' global, 'c' confirm)" })
+map("n", "<Space>S", ":%s/\\<<C-R>=expand('<cword>')<CR>\\>/", { desc = "Search & replace current word under cursor" })
+
+map("n", "<space>sn", ":%s///gn<CR>", { desc = "Number of matches on last search" })
+map("x", "/", "<Esc>/\\%V", { desc = "Search within the visual range" })
+map("n", "<space>sv", "/\\%V", { desc = "Search the last visual selection" })
+
+map("x", "<space>d", 'y:%s/<C-r>"//gc<CR>', { desc = "Delete all occurrences of selected text" })
+
+map("n", "<space>cd", "<Cmd>cd %:p:h <bar> pwd<CR>", { desc = "Change directory to current file" })
+
+map("n", "<space>tw", "<Cmd>set wrap! wrap?<CR>", { desc = "Toggle word wrapping" })
+map("n", "<space>tn", "<Cmd>set number! number?<CR>", { desc = "Toggle line numbers" })
+
+map("n", "<space>t2", "<Cmd>SetTab 2<CR>", { desc = "Switch tab-width to 2" })
+map("n", "<space>t4", "<Cmd>SetTab 4<CR>", { desc = "Switch tab-width to 4" })
+map("n", "<space>t8", "<Cmd>SetTab 8<CR>", { desc = "Switch tab-width to 8" })
+
+map("n", "<F5>", Run, { silent = true }, { desc = "Run asynchronously (with AsyncDo)" })
+map("n", "<F6>", Format, { silent = true }, { desc = "Format asynchronously (with AsyncDo)" })
+map("n", "<F7>", Build, { silent = true }, { desc = "Build asynchronously (with AsyncDo)" })
+
+map("n", "<space>w", "<C-w>", { desc = "Split navigation prefix" })
+map("n", "<C-space>", "<C-w>w", { desc = "Go to previous split" })
+map("t", "<C-space>", "<C-\\><C-n><C-w>p", { desc = "Go to previous split" })
+map("t", "<C-w>N", "<C-\\><C-n>", { desc = "Terminal escape" })
+map("t", "<A-i>", "<C-\\><C-n>", { desc = "Terminal escape" })
+
+map("n", "<C-Up>", "<Cmd>res +3<CR>", { desc = "Split resizing" })
+map("n", "<C-Down>", "<Cmd>res -3<CR>", { desc = "Split resizing" })
+map("n", "<C-Left>", "<Cmd>vert res +3<CR>", { desc = "Split resizing" })
+map("n", "<C-Right>", "<Cmd>vert res -3<CR>", { desc = "Split resizing" })
 
 -- Terminal Mode
 map("n", "<space><CR>", "<Cmd>vert term<CR>i")
@@ -782,9 +702,8 @@ map("c", "<C-a>", "<Home>")
 map("c", "<C-e>", "<End>")
 map("c", "<C-b>", "<Left>")
 map("c", "<C-f>", "<Right>")
-map("c", "<C-k>", "<C-o>d$")
-map("c", "<M-f>", "<S-Right>")
-map("c", "<M-b>", "<S-Left>")
+map("c", "<A-f>", "<S-Right>")
+map("c", "<A-b>", "<S-Left>")
 map("c", "<C-BS>", "<C-w>")
 map("c", "<Esc>", "<C-c><Esc>")
 
@@ -793,12 +712,11 @@ map("i", "<C-a>", "<Home>")
 map("i", "<C-e>", "<End>")
 map("i", "<C-b>", "<Left>")
 map("i", "<C-f>", "<Right>")
-map("i", "<C-k>", "<C-o>d$")
 map("i", "<C-d>", "<Del>")
-map("i", "<M-f>", "<C-right>")
-map("i", "<M-b>", "<C-left>")
-map("i", "<M-n>", "<C-o>j")
-map("i", "<M-p>", "<C-o>k")
+map("i", "<A-f>", "<C-right>")
+map("i", "<A-b>", "<C-left>")
+map("i", "<A-n>", "<C-o>j")
+map("i", "<A-p>", "<C-o>k")
 map("i", "<C-u>", "<C-g>u<C-u>")
 map("i", "<C-BS>", "<C-w>")
 map("i", "<S-Left>", "<Esc>v<C-g><Left>")
@@ -806,84 +724,7 @@ map("i", "<S-Right>", "<Esc>v<C-g><Right>")
 map("i", "<C-Up>", function() vim.cmd("keepjumps normal! " .. vim.v.count1 .. "{") end)
 map("i", "<C-Down>", function() vim.cmd("keepjumps normal! " .. vim.v.count1 .. "}") end)
 
--- Better page up/down
-map("n", "L", function()
-	local current_line = vim.fn.line(".")
-	vim.cmd("normal! L")
-	if current_line == vim.fn.line("$") then vim.cmd("normal! zb") end
-	if current_line == vim.fn.line(".") then vim.cmd("normal! zt") end
-end)
-map("n", "H", function()
-	local current_line = vim.fn.line(".")
-	vim.cmd("normal! H")
-	if current_line == vim.fn.line(".") then vim.cmd("normal! zb") end
-end)
-
--- Saner command-line history
-map("c", "<C-n>", function()
-	return vim.fn.wildmenumode() == 1 and "<C-n>" or "<Down>"
-end, { expr = true })
-map("c", "<C-p>", function()
-	return vim.fn.wildmenumode() == 1 and "<C-p>" or "<Up>"
-end, { expr = true })
-
--- Single yank and multiple pastes over selection
-map("x", "p", "P")
-
--- Keep the cursor centered when searching
-map("n", "n", "nzzzv")
-map("n", "N", "Nzzzv")
-
--- Reselect the last paste
-map("n", "gp", "`[v`]")
-
--- Don't lose selection when shifting sidewards
-map("x", "<", "<gv^")
-map("x", ">", ">gv^")
-
--- Moving lines in visual mode
-map("v", "<C-j>", "<Cmd>m '>+1<CR>gv=gv")
-map("v", "<C-k>", "<Cmd>m '<-2<CR>gv=gv")
-
--- Search & Replace ('g' global, 'c' confirm)
-map("n", "<space>ss", ":%s//gc<Left><Left><Left>")
-
--- Search for the current word under the cursor and replace it
-map("n", "<Space>S", ":%s/\\<<C-R>=expand('<cword>')<CR>\\>/")
-
--- Number of matches on last search
-map("n", "<space>sn", ":%s///gn<CR>")
-
--- Search within the visual range
-map("x", "/", "<Esc>/\\%V")
-
--- Search the last visual selection
-map("n", "<space>sv", "/\\%V")
-
--- Delete all occurrences of selected text
-map("x", "<space>d", 'y:%s/<C-r>"//gc<CR>')
-
--- Change directory to current file
-map("n", "<space>cd", "<Cmd>cd %:p:h <bar> pwd<CR>")
-
--- Toggle word wrapping
-map("n", "<space>tw", "<Cmd>set wrap! wrap?<CR>")
-
--- Toggle line numbers
-map("n", "<space>tn", "<Cmd>set number! number?<CR>")
-
--- Toggle hidden characters
-map("n", "<space>tl", function()
-	vim.cmd("set listchars=tab:·\\ ,space:·,precedes:<,extends:>,eol:¬")
-	vim.cmd("set list!")
-end)
-
--- Toggle light/dark theme
-map("n", "<space>tc", function()
-	vim.o.background = (vim.o.background == "light") and "dark" or "light"
-end)
-
--- Clipboard integration (Wayland or X11 specific)
+-- Clipboard integration
 if os.getenv("XDG_SESSION_TYPE") == "wayland" then
 	map("x", '"+y', [[y<Cmd>call system('wl-copy', @")<CR>]])
 	map("n", '"+p', [[<Cmd>let @"=substitute(system('wl-paste --no-newline'), "\r", "", "g")<CR>p]])
@@ -896,25 +737,143 @@ else
 	map("n", "<space>P", '"+P')
 end
 
--- Toggle indent guides
-map("n", "<space>ti", ToggleIndentGuides)
+map("c", "<C-n>", function()
+	return vim.fn.wildmenumode() == 1 and "<C-n>" or "<Down>"
+end, { expr = true }, { desc = "Saner command-line history" })
+map("c", "<C-p>", function()
+	return vim.fn.wildmenumode() == 1 and "<C-p>" or "<Up>"
+end, { expr = true }, { desc = "Saner command-line history" })
 
--- Toggle quickfix window
-map("n", "<C-q>", ToggleQuickfix)
+map("n", "H", function()
+	local current_line = vim.fn.line(".")
+	vim.cmd("normal! H")
+	if current_line == vim.fn.line(".") then vim.cmd("normal! zb") end
+end, { desc = "Better pgup" })
+map("n", "L", function()
+	local current_line = vim.fn.line(".")
+	vim.cmd("normal! L")
+	if current_line == vim.fn.line("$") then vim.cmd("normal! zb") end
+	if current_line == vim.fn.line(".") then vim.cmd("normal! zt") end
+end, { desc = "Better pgdn" })
 
--- Universal opposite of J
-map("n", "<space>k", BreakHere)
+map("n", "<space>k", function()
+	local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+	local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
+	local indent = line:match("^%s*")
+	local first, second = line:sub(1, col), line:sub(col + 1)
 
--- Key mappings for quick tab width switching
-map("n", "<space>t2", "<Cmd>SetTab 2<CR>")
-map("n", "<space>t4", "<Cmd>SetTab 4<CR>")
-map("n", "<space>t8", "<Cmd>SetTab 8<CR>")
+	vim.api.nvim_buf_set_lines(0, row - 1, row, false, { first })
+	vim.api.nvim_buf_set_lines(0, row, row, false, { indent .. second })
+	vim.api.nvim_win_set_cursor(0, { row + 1, 0 })
+	vim.fn.histdel("/", -1)
+end, { desc = "Break line at cursor (opposite of J)" })
 
--- Toggle colorcolumn at cursor position & set vartabstop accordingly
-map("n", "<space>cc", function() ToggleColorColumn(false) end)
-map("n", "<space>cC", function() ToggleColorColumn(true) end)
+map("n", "<space>bo", function()
+	local current = vim.fn.bufnr("%")
+	local to_wipe = vim.tbl_filter(function(buf)
+		return buf.hidden and buf.bufnr ~= current
+	end, vim.fn.getbufinfo())
 
--- Asynchronously Run, Format & Build
-map("n", "<F5>", Run, { silent = true })
-map("n", "<F6>", Format, { silent = true })
-map("n", "<F7>", Build, { silent = true })
+	if #to_wipe > 0 then
+		local bufnrs = vim.tbl_map(function(buf) return buf.bufnr end, to_wipe)
+		vim.cmd("confirm bwipeout " .. table.concat(bufnrs, " "))
+	end
+end, { desc = "Wipe out all buffers except the current one" })
+
+map("n", "<space>wm", function()
+	local t = vim.t
+	local win = vim.api.nvim_get_current_win()
+
+	if t.restore_zoom and t.restore_zoom.win == win then
+		vim.cmd(t.restore_zoom.cmd)
+		t.restore_zoom = nil
+	else
+		t.restore_zoom = {
+			win = win,
+			cmd = vim.fn.winrestcmd(),
+		}
+		vim.cmd("resize")
+		vim.cmd("vertical resize")
+	end
+end, { desc = "Maximize/Restore current window split" })
+
+map("n", "<space>ti", function()
+	local ts = vim.o.tabstop
+	if ts == 2 then
+		vim.opt.listchars = { tab = "· ", leadmultispace = "· " }
+	elseif ts == 4 then
+		vim.opt.listchars = { tab = "· ", leadmultispace = "·   " }
+	elseif ts == 8 then
+		vim.opt.listchars = { tab = "· ", leadmultispace = "·       " }
+	end
+	vim.opt.list = not vim.o.list
+end, { desc = "Toggle indent guides" })
+
+map("n", "<C-q>", function()
+	local is_qf = vim.fn.getwininfo(vim.fn.win_getid())[1].quickfix == 1
+	vim.cmd(is_qf and "cclose" or "copen")
+end, { desc = "Toggle quickfix window" })
+
+map("n", "<space>tl", function()
+	vim.cmd("set listchars=tab:·\\ ,space:·,precedes:<,extends:>,eol:¬")
+	vim.cmd("set list!")
+end, { desc = "Toggle hidden characters" })
+
+map("n", "<space>tc", function()
+	vim.o.background = (vim.o.background == "light") and "dark" or "light"
+end, { desc = "Toggle light/dark theme" })
+
+map("n", "<space>cc", function()
+	local col = vim.fn.virtcol(".")
+	local cc = {}
+	for val in vim.wo.colorcolumn:gmatch("%d+") do
+		table.insert(cc, tonumber(val))
+	end
+
+	if vim.tbl_contains(cc, col) then
+		vim.cmd("setlocal colorcolumn-=" .. col)
+	else
+		table.insert(cc, col)
+		table.sort(cc)
+		vim.wo.colorcolumn = table.concat(cc, ",")
+	end
+
+	vim.cmd("setlocal varsofttabstop&")
+	if #cc > 1 or (#cc == 1 and cc[1] < 60) then
+		local shift = 1
+		for _, v in ipairs(cc) do
+			local delta = v - shift
+			if delta > 0 then
+				vim.cmd("setlocal varsofttabstop+=" .. delta)
+				shift = v
+			end
+		end
+		local sw = tonumber(vim.o.shiftwidth)
+		if sw and sw > 0 then
+			vim.cmd("setlocal varsofttabstop+=" .. sw)
+		end
+	end
+end, { desc = "Toggle colorcolumn at cursor & set varsofttabstop accordingly" })
+
+map("n", "<space>cC", function()
+	local buf = vim.api.nvim_get_current_buf()
+	local cc = vim.wo.colorcolumn
+	if cc == "" then
+		vim.wo.colorcolumn = vim.b[buf].cc or "80"
+	else
+		vim.b[buf].cc = cc
+		vim.wo.colorcolumn = ""
+	end
+end, { desc = "Toggle all colorcolumns on/off" })
+
+if not vim.g.neovide then
+	map('n', '<C-d>', function()
+		local dist = math.floor(vim.api.nvim_win_get_height(0) / 2)
+		SmoothScroll('d', dist, 100, 2)
+	end, { noremap = true, silent = true, desc = "Smooth scroll" })
+
+	map('n', '<C-u>', function()
+		local dist = math.floor(vim.api.nvim_win_get_height(0) / 2)
+		SmoothScroll('u', dist, 100, 2)
+	end, { noremap = true, silent = true, desc = "Smooth scroll" })
+end
