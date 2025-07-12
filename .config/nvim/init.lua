@@ -231,16 +231,6 @@ require("lazy").setup({
 	},
 
 	{
-		"chengzeyi/multiterm.vim",
-		event = "VeryLazy",
-		config = function()
-			vim.keymap.set("n", "<C-z>", "<Plug>(Multiterm)")
-			vim.keymap.set("t", "<C-z>", "<Plug>(Multiterm)")
-			vim.keymap.set("i", "<C-z>", "<Plug>(Multiterm)")
-		end
-	},
-
-	{
 		"catgoose/nvim-colorizer.lua",
 		event = "VeryLazy",
 		config = function()
@@ -250,6 +240,16 @@ require("lazy").setup({
 			vim.keymap.set("n", "<space>tC", function()
 				vim.cmd("ColorizerToggle")
 			end, { desc = "Toggle Colorizer" })
+		end,
+	},
+
+	{
+		dir = vim.fn.stdpath("config") .. "/lua/multiterm",
+		event = "VeryLazy",
+		config = function()
+			require("multiterm").setup({
+				vim.keymap.set({ "n", "i", "t" }, "<C-z>", "<Plug>(Multiterm)"),
+			})
 		end,
 	},
 
