@@ -24,7 +24,7 @@ set nocompatible encoding=utf-8 hidden confirm secure exrc
 # |  Plugins (with VIM8+ plugin manager)                             |
 # O------------------------------------------------------------------O
 # Non-deferred loading
-packadd coc.nvim                        # neoclide/coc.nvim
+# packadd coc.nvim                        # neoclide/coc.nvim
 # packadd lsp                             # yegappan/lsp
 #     call LspAddServer([{
 #         \    name: 'typescriptlang',
@@ -202,7 +202,7 @@ if has("gui_running")
 				endif
 			elseif result ==  5
 				if has("gui_win32")   | set linespace=1 guifont=Iosevka_Fixed:h11
-				elseif has("gui_gtk") | set linespace=1 guifont=Iosevka\ Fixed\ SS14\ 12
+				elseif has("gui_gtk") | set linespace=1 guifont=Iosevka\ Fixed\ 12
 				endif
 			elseif result ==  6
 				if has("gui_win32")   | set linespace=0 guifont=Jetbrains_Mono_NL_Regular:h11
@@ -225,7 +225,7 @@ if has("gui_running")
         endif
     enddef
 
-    FontMenu(0, 9)
+    FontMenu(0, 5)
 
     g:ScrollBar = 1
     set guioptions=!icr
