@@ -1,62 +1,58 @@
 
 ## DNF (Fedora with KDE)
 
+kernel-cachyos-lts kernel-cachyos-lts-devel-matched
 akmod-nvidia xorg-x11-drv-nvidia-cuda
-libva-nvidia-driver nvtop
-nvidia-vaapi-driver libva-utils vdpauinfo
+libva-nvidia-driver nvidia-vaapi-driver nvtop
+intel-media-driverj igt-gpu-tools
+libva-utils vdpauinfo
 @virtualization
+git git-credential-oauth gitui
+kitty foot fzf wl-clipboard
 bottles
-git git-credential-oauth
-fzf
-kitty
 bemenu
-nodejs
 go
-php composer
-sqlitebrowser
+nodejs
+php composer sqlitebrowser
 astyle
 cmake cmake-gui
 ufw
-btop iotop
+btop procs
+gsmartcontrol
+iperf3
+tailscale
 syncthing
+jellyfin
 qalculate-gtk
 gnome-font-viewer
 gnome-disk-utility
 android-tools
 speedtest-cli
-wl-clipboard
 mousepad
 qview
 qt-heif-image-plugin libheif-freeworld
 mpv vlc
 ffmpeg --allowerasing
 zathura zathura-pdf-mupdf
-xclip
 fastfetch
-copyq
 gvim
 neovim neovide
 sublime-text
-zed
 eza
 bat
 fd
 duf
-procs
 glow
 tokei
-atool
-p7zip
-gitui
+atool p7zip
 transmission-qt qbittorrent
 navidrome
 mednafen
 onefetch
-qstardict
-mame
 tldr
 keyd
 mpris-proxy
+mame
 mangohud goverlay
 openrazer-meta razergenie
 sl cmatrix
@@ -153,6 +149,7 @@ md.obsidian.Obsidian
 io.missioncenter.MissionCenter
 ca.desrt.dconf-editor
 it.mijorus.gearlever
+com.github.wwmm.easyeffects
 com.github.AmatCoder.mednaffe
 com.github.tenderowl.frog
 com.parsecgaming.parsec
