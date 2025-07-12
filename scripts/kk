@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# fzf configuration to match bemenu_config
+fzf_config=(
+  -i
+  --height=30
+  --reverse
+  --prompt="Search and select process to kill: "
+  --border=sharp
+  --padding=1
+  --multi
+  # --preview 'ps -p {1} -o pid,ppid,cmd'
+)
+
+# Run fzf to select a process, showing PID and full command
+selected=$(ps -u "$USER" -o pid,cmd | \
+           fzf "${fzf_config[@]}" | \
+           awk '{print $1 " " substr($0, index($0,$2))}')
+
+# Check if a process was selected
+if [[ ! -z "$selected" ]]; then
+    # Confirm with fzf
+    answer=$(echo -e "Yes\nNo" | \
+             fzf --height=2 --prompt="$selected will be killed, are you sure? " \
+             --border=sharp)
+
+    # If confirmed, kill the process
+    if [[ "$answer" == "Yes" ]]; then
+        selpid=$(awk '{print $1}' <<< "$selected")
+        kill -9 "$selpid"
+    fi
+fi
+
+exit 0

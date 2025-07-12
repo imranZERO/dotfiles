@@ -1,18 +1,37 @@
 #!/bin/bash
 
-selected="$(ps -a -u $USER | \
-			bemenu -i -p "Search and select process to kill" $(<~/scripts/bemenu_config) | \
-			awk '{print $1" "$4}')";
+bemenu_config=(-b -i -l 20
+	--fn 'Iosevka Fixed'
+	--fb '#282828'
+	--ff '#ebdbb2'
+	--nb '#282828'
+	--nf '#ebdbb2'
+	--tb '#282828'
+	--hb '#282828'
+	--tf '#fb4934'
+	--hf '#fabd2f'
+	--af '#ebdbb2'
+	--ab '#282828'
+	-B 2 --bdr '#85AE7F'
+	--line-height 25
+)
 
-if [[ ! -z $selected ]]; then
+# Run bemenu to select a process, showing PID and full command
+selected=$(ps -u "$USER" -o pid,cmd | \
+           bemenu "${bemenu_config[@]}" -p "Search and select process to kill" | \
+           awk '{print $1 " " substr($0, index($0,$2))}')
 
-	answer="$(echo -e "Yes\nNo" | \
-			bemenu -i -p "$selected will be killed, are you sure?" $(<~/scripts/bemenu_config) )"
+# Check if a process was selected
+if [[ ! -z "$selected" ]]; then
+    # Confirm with bemenu
+    answer=$(echo -e "Yes\nNo" | \
+             bemenu "${bemenu_config[@]}" -p "$selected will be killed, are you sure?")
 
-	if [[ $answer == "Yes" ]]; then
-		selpid="$(awk '{print $1}' <<< $selected)";
-		kill -9 $selpid
-	fi
+    # If confirmed, kill the process
+    if [[ "$answer" == "Yes" ]]; then
+        selpid=$(awk '{print $1}' <<< "$selected")
+        kill -9 "$selpid"
+    fi
 fi
 
 exit 0

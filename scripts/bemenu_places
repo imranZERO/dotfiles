@@ -1,11 +1,27 @@
 #!/usr/bin/env bash
 
+bemenu_config=(-b -i -l 20
+	--fn 'Iosevka Fixed'
+	--fb '#282828'
+	--ff '#ebdbb2'
+	--nb '#282828'
+	--nf '#ebdbb2'
+	--tb '#282828'
+	--hb '#282828'
+	--tf '#fb4934'
+	--hf '#fabd2f'
+	--af '#ebdbb2'
+	--ab '#282828'
+	-B 2 --bdr '#85AE7F'
+	--line-height 25
+)
+
 prompt="-p Path:"
 root_path="$HOME"
 
 find_path="$(find $root_path -maxdepth 3 -type d | \
 			 sed 's|^'$root_path/'||' | \
-			 bemenu $(<~/scripts/bemenu_config) $prompt)"
+			 bemenu "${bemenu_config[@]}" $prompt)"
 
 if [[ ! -z "$find_path" ]]; then
 	xdg-open "$find_path"

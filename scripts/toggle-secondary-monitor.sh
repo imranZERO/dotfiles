@@ -1,21 +1,17 @@
 #!/bin/bash
 
-MONITOR_ID="DP-2"
+MONITOR_ID="HDMI-A-3"
 STATUS=$(kscreen-doctor -o | grep -A1 "$MONITOR_ID" | grep enabled)
+POSITION="1920,-450"
 
 if [[ $STATUS == *"enabled"* ]]; then
-	kscreen-doctor output."$MONITOR_ID".disable
+    kscreen-doctor output."$MONITOR_ID".disable
 
-	# Easyeffects crashes when disabling. Relaunch it
-	sleep 2s
-	easyeffects --gapplication-service
+    # Easyeffects crashes when disabling. Relaunch it
+    # sleep 2s && easyeffects --gapplication-service
 else
-	kscreen-doctor output."$MONITOR_ID".enable
+    # Reset and enable the monitor with the new position
+    kscreen-doctor output."$MONITOR_ID".disable && kscreen-doctor output."$MONITOR_ID".enable output."$MONITOR_ID".position."$POSITION"
 
-	# Open display configuration so that position can be adjusted
-	kcmshell6 kcm_kscreen
-
-	# Easyeffects crashes when enabling. Relaunch it
-	sleep 2s
-	easyeffects --gapplication-service
+    # sleep 2s && easyeffects --gapplication-service
 fi

@@ -3,6 +3,22 @@
 # usage: (for google search)
 # gg candy crush
 
+bemenu_config=(-b -i -l 20
+	--fn 'Iosevka Fixed'
+	--fb '#282828'
+	--ff '#ebdbb2'
+	--nb '#282828'
+	--nf '#ebdbb2'
+	--tb '#282828'
+	--hb '#282828'
+	--tf '#fb4934'
+	--hf '#fabd2f'
+	--af '#ebdbb2'
+	--ab '#282828'
+	-B 2 --bdr '#85AE7F'
+	--line-height 25
+)
+
 sources_file="$HOME/scripts/dmenu-websearch-sources"
 
 prompt="-p Search:"
@@ -51,7 +67,7 @@ se_data="$(
 eval "$se_data"
 
 # Output label string to rofi...
-search="$(bemenu $prompt $(<~/scripts/bemenu_config) <<< $dmenu_labels)"
+search="$(bemenu $prompt "${bemenu_config[@]}" <<< $dmenu_labels)"
 
 if [[ ! -z "$search" ]]; then
 

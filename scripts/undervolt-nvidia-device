@@ -2,6 +2,9 @@
 
 # https://pypi.org/project/nvidia-ml-py/
 
+# Add the following to `sudo visudo`
+# imran ALL=(ALL) NOPASSWD: /home/imran/scripts/undervolt-nvidia-device
+
 from pynvml import *
 from ctypes import byref
 import os

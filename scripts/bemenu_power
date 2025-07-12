@@ -1,10 +1,26 @@
 #!/bin/bash
 
+bemenu_config=(-b -i -l 20
+	--fn 'Iosevka Fixed'
+	--fb '#282828'
+	--ff '#ebdbb2'
+	--nb '#282828'
+	--nf '#ebdbb2'
+	--tb '#282828'
+	--hb '#282828'
+	--tf '#fb4934'
+	--hf '#fabd2f'
+	--af '#ebdbb2'
+	--ab '#282828'
+	-B 2 --bdr '#85AE7F'
+	--line-height 25
+)
+
 # Define options
 options="Cancel\nLock Screen\nSleep\nLogout\nShutdown\nReboot"
 
 # Display the menu using bemenu
-choice=$(echo -e "$options" | bemenu -p "Power Menu:" $(<~/scripts/bemenu_config))
+choice=$(echo -e "$options" | bemenu -p "Power Menu:" "${bemenu_config[@]}")
 
 # Execute the chosen option
 case $choice in
@@ -18,17 +34,17 @@ case $choice in
 		systemctl suspend
 		;;
 	"Logout")
-		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to logout?" | grep -q "Yes"; then
+		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to logout?" "${bemenu_config[@]}" | grep -q "Yes"; then
 			loginctl terminate-session
 		fi
 		;;
 	"Shutdown")
-		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to shutdown?" | grep -q "Yes"; then
+		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to shutdown?" "${bemenu_config[@]}" | grep -q "Yes"; then
 			systemctl poweroff
 		fi
 		;;
 	"Reboot")
-		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to reboot?" | grep -q "Yes"; then
+		if echo -e "Yes\nNo" | bemenu -i -p "Are you sure you want to reboot?" "${bemenu_config[@]}" | grep -q "Yes"; then
 			systemctl reboot
 		fi
 		;;
