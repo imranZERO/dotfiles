@@ -76,15 +76,18 @@ vim.diagnostic.config({
 	virtual_text = true, signs = true, underline = true,
 })
 
+-- Netrw settings
+vim.g.NetrwIsOpen = false
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = -30
+vim.g.netrw_liststyle = 3
+vim.g.netrw_browse_split = 4
+vim.g.netrw_fastbrowse = 0
+
 
 -- O---------------------------------------------------------------------------O
 -- |  Plugins                                                                  |
 -- O---------------------------------------------------------------------------O
-
--- Disable unwanted built-in plugins
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_2html_plugin = 1
 
 -- bootstrap lazy.nvim if it's not installed
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -105,7 +108,7 @@ require("lazy").setup({
 		config = function()
 			require("fzf-lua").setup({
 				winopts = {
-					fullscreen = true,
+					-- fullscreen = true,
 					preview = {
 						flip_columns = 150,
 					},
@@ -167,8 +170,7 @@ require("lazy").setup({
 		"saghen/blink.cmp",
 		event = "VeryLazy",
 		dependencies = { "rafamadriz/friendly-snippets" },
-		version = "1.*",
-
+		version = '1.*',
 		opts = {
 			keymap = {
 				preset = "default",
@@ -244,11 +246,12 @@ require("lazy").setup({
 	},
 
 	{
-		dir = vim.fn.stdpath("config") .. "/lua/multiterm",
+		"imranzero/multiterm.nvim",
 		event = "VeryLazy",
 		config = function()
 			require("multiterm").setup({
-				vim.keymap.set({ "n", "i", "t" }, "<C-z>", "<Plug>(Multiterm)"),
+				vim.keymap.set({ "n", "v", "i", "t" }, "<C-z>", "<Plug>(Multiterm)"),
+				vim.keymap.set("n", "<space><C-z>", "<Plug>(MultitermList)"),
 			})
 		end,
 	},
@@ -301,9 +304,7 @@ if vim.g.neovide then
 			prompt = "Font > ",
 			actions = {
 				["default"] = function(selected)
-					local font = selected[1]
-					vim.o.guifont = font
-					print("Switched to font: " .. font)
+					vim.o.guifont = selected[1]
 				end,
 			},
 		})
@@ -373,6 +374,14 @@ local cmode = {
 	t = "TERMINAL"
 }
 
+local function git_branch()
+	local null = package.config:sub(1,1) == "\\" and "nul" or "/dev/null"
+	local h = io.popen("git rev-parse --abbrev-ref HEAD 2>" .. null)
+	if not h then return "" end
+	local b = h:read("*l") h:close()
+	return b and b ~= "" and b ~= "HEAD" and (" " .. b .. " ") or ""
+end
+
 function _G.Statusline()
 	local s = " "
 	local mode = cmode[vim.fn.mode()] or "UNKNOWN"
@@ -383,6 +392,7 @@ function _G.Statusline()
 	s = s .. " %r%m%h" -- readonly, modified, help
 	s = s .. "%=" -- Right-align the next section
 	if vim.g.asyncdo then s = s .. "[running]" end
+	s = s .. git_branch()
 	s = s .. " ≣ %02p%%" -- File position percentage
 	s = s .. " %*" -- Reset highlight
 	s = s .. " %{strlen(&filetype) ? &filetype : 'none'} |" -- Show filetype or "none"
@@ -400,25 +410,62 @@ vim.loop.new_timer():start(0, 1000, vim.schedule_wrap(function()
 	was_active = active
 end))
 
+-- Cursorline behaviour
+local cursorline_events = {
+	{ event = "WinEnter",    value = true },
+	{ event = "WinLeave",    value = false },
+	{ event = "InsertEnter", value = false },
+	{ event = "InsertLeave", value = true }
+}
+for _, cmd in ipairs(cursorline_events) do
+	vim.api.nvim_create_autocmd(cmd.event, {
+		pattern = "*",
+		callback = function()
+			vim.wo.cursorline = cmd.value
+		end,
+	})
+end
+
+-- Set Tab indent sizes
+local function SetTab(n)
+	n = tonumber(n)
+	if n then
+		vim.opt.tabstop = n
+		vim.opt.softtabstop = n
+		vim.opt.shiftwidth = n
+		vim.opt.expandtab = false
+	else
+		print("Invalid tab size: " .. tostring(n))
+	end
+end
+vim.api.nvim_create_user_command("SetTab", function(opts)
+	SetTab(opts.args)
+end, { nargs = 1 })
+
+-- Basic smooth scrolling
+function SmoothScroll(dir, dist, duration, speed)
+	local steps = math.floor(dist / speed)
+	local delay = math.floor(duration / steps)
+
+	local i = 0
+	local keys = dir == 'd' and string.rep("<C-e>j", speed) or string.rep("<C-y>k", speed)
+	local feed = vim.api.nvim_replace_termcodes(keys, true, false, true)
+
+	local function step()
+		if i >= steps then return end
+		i = i + 1
+		vim.api.nvim_feedkeys(feed, 'n', false)
+		vim.cmd('redraw')
+		vim.defer_fn(step, delay)
+	end
+
+	step()
+end
+
 
 -- O---------------------------------------------------------------------------O
 -- |  Misc.                                                                    |
 -- O---------------------------------------------------------------------------O
-
--- Format options
-vim.api.nvim_create_autocmd("BufWinEnter", {
-	callback = function()
-		vim.opt.formatoptions = "jln"
-	end
-})
-
--- Scratch buffer
-vim.api.nvim_create_user_command("S", function()
-	vim.cmd("vnew")
-	vim.bo.buflisted = false
-	vim.bo.buftype = "nofile"
-	vim.bo.bufhidden = "wipe"
-end, {})
 
 -- Run/execute current buffer
 local function Run()
@@ -482,24 +529,6 @@ local function Build()
 	end
 end
 
--- Autocommands for cursorline behaviour
-vim.api.nvim_create_augroup("CURSORLINE", { clear = true })
-local cursorline_events = {
-	{ event = "WinEnter",    value = true },
-	{ event = "WinLeave",    value = false },
-	{ event = "InsertEnter", value = false },
-	{ event = "InsertLeave", value = true }
-}
-for _, cmd in ipairs(cursorline_events) do
-	vim.api.nvim_create_autocmd(cmd.event, {
-		group = "CURSORLINE",
-		pattern = "*",
-		callback = function()
-			vim.wo.cursorline = cmd.value
-		end,
-	})
-end
-
 -- Regex-based text alignment (default: '=')
 local function AlignSection(line1, line2, sep)
 	sep = sep ~= "" and sep or "="
@@ -546,28 +575,15 @@ end
 vim.api.nvim_create_user_command("A", function() OpenAlternate("edit") end, {})
 vim.api.nvim_create_user_command("AV", function() OpenAlternate("botright vsplit") end, {})
 
--- Set Tab indent sizes
-local function SetTab(n)
-	n = tonumber(n)
-	if n then
-		vim.opt.tabstop = n
-		vim.opt.softtabstop = n
-		vim.opt.shiftwidth = n
-		vim.opt.expandtab = false
-	else
-		print("Invalid tab size: " .. tostring(n))
-	end
-end
-vim.api.nvim_create_user_command("SetTab", function(opts)
-	SetTab(opts.args)
-end, { nargs = 1 })
+-- Lua 5.2+ or fallback to 5.1
+local unpack_ = table.unpack or rawget(_G, "unpack")
 
 -- Remove trailing whitespace and newlines at end of file & reset cursor position
 local function StripWhitespace()
 	local skip = { markdown = true, org = true } -- Skip certain filetypes
 	if skip[vim.bo.filetype] then return end
 
-	local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+	local row, col = unpack_(vim.api.nvim_win_get_cursor(0))
 	vim.cmd([[%s/\s\+$//e]])
 	vim.cmd([[%s/\n\+\%$//e]])
 	local max_row = vim.api.nvim_buf_line_count(0)
@@ -582,31 +598,33 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	callback = StripWhitespace,
 })
 
--- Basic smooth scrolling
-function SmoothScroll(dir, dist, duration, speed)
-	local steps = math.floor(dist / speed)
-	local delay = math.floor(duration / steps)
-
-	local i = 0
-	local keys = dir == 'd' and string.rep("<C-e>j", speed) or string.rep("<C-y>k", speed)
-	local feed = vim.api.nvim_replace_termcodes(keys, true, false, true)
-
-	local function step()
-		if i >= steps then return end
-		i = i + 1
-		vim.api.nvim_feedkeys(feed, 'n', false)
-		vim.cmd('redraw')
-		vim.defer_fn(step, delay)
-	end
-
-	step()
-end
-
 -- Turn :t to :tabe and Open :h in new tab
 vim.cmd([[
 	cnoreabbrev <expr> t getcmdtype() == ":" && getcmdline() ==# "t" ? "tabe" : "t"
 	cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() ==# "h" ? "tab help" : "h"
 ]])
+
+-- Format options
+vim.api.nvim_create_autocmd("BufWinEnter", {
+	callback = function()
+		vim.opt.formatoptions = "jln"
+	end
+})
+
+-- Hightlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+	callback = function()
+		vim.highlight.on_yank()
+	end
+})
+
+-- Scratch buffer
+vim.api.nvim_create_user_command("S", function()
+	vim.cmd("vnew")
+	vim.bo.buflisted = false
+	vim.bo.buftype = "nofile"
+	vim.bo.bufhidden = "wipe"
+end, {})
 
 
 -- O---------------------------------------------------------------------------O
@@ -757,7 +775,7 @@ map("n", "L", function()
 end, { desc = "Better pgdn" })
 
 map("n", "<space>k", function()
-	local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+	local row, col = unpack_(vim.api.nvim_win_get_cursor(0))
 	local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
 	local indent = line:match("^%s*")
 	local first, second = line:sub(1, col), line:sub(col + 1)
@@ -866,14 +884,38 @@ map("n", "<space>cC", function()
 	end
 end, { desc = "Toggle all colorcolumns on/off" })
 
+map("n", "<C-;>", function()
+	if vim.g.NetrwIsOpen then
+		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+			if vim.bo[buf].filetype == "netrw" then
+				vim.cmd("silent! bwipeout " .. buf)
+			end
+		end
+		vim.g.NetrwIsOpen = false
+	else
+		vim.g.NetrwIsOpen = true
+		vim.cmd("silent! Vexplore")
+		vim.defer_fn(function()
+			for _, win in ipairs(vim.api.nvim_list_wins()) do
+				local buf = vim.api.nvim_win_get_buf(win)
+				if vim.bo[buf].filetype == "netrw" then
+					local opts = { buffer = buf, silent = true, noremap = false }
+					vim.keymap.set("n", ".", "gh", opts)
+					vim.opt_local.statusline = " %f"
+				end
+			end
+		end, 50) -- Delay to ensure Netrw is loaded
+	end
+end, { noremap = true, silent = true, desc = "Toggle netrw" })
+
 if not vim.g.neovide then
 	map('n', '<C-d>', function()
 		local dist = math.floor(vim.api.nvim_win_get_height(0) / 2)
-		SmoothScroll('d', dist, 100, 2)
+		SmoothScroll('d', dist, 50, 4)
 	end, { noremap = true, silent = true, desc = "Smooth scroll" })
 
 	map('n', '<C-u>', function()
 		local dist = math.floor(vim.api.nvim_win_get_height(0) / 2)
-		SmoothScroll('u', dist, 100, 2)
+		SmoothScroll('u', dist, 50, 4)
 	end, { noremap = true, silent = true, desc = "Smooth scroll" })
 end
