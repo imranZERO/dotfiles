@@ -23,22 +23,6 @@ set nocompatible encoding=utf-8 hidden confirm secure exrc
 # O------------------------------------------------------------------O
 # |  Plugins (with VIM8+ plugin manager)                             |
 # O------------------------------------------------------------------O
-# Non-deferred loading
-# packadd coc.nvim                        # neoclide/coc.nvim
-# packadd lsp                             # yegappan/lsp
-#     call LspAddServer([{
-#         \    name: 'typescriptlang',
-#         \    filetype: ['javascript', 'typescript'],
-#         \    path: 'typescript-language-server',
-#         \    args: ['--stdio'],
-#         \  }])
-#     call LspAddServer([{
-#         \    name: 'golang',
-#         \    filetype: ['go', 'gomod'],
-#         \    path: $HOME .. '/go/bin/gopls',
-#         \    args: ['serve'],
-#         \    syncInit: v:true
-#         \  }])
 
 # Deferred loading
 def Load_Plugins(t: number)
@@ -52,21 +36,8 @@ def Load_Plugins(t: number)
         command! -bang -nargs=* -complete=file Make
         \ asyncdo#run(<bang>0, &makeprg, <f-args>)
     packadd vim-polyglot                # sheerun/vim-polyglot
-        # command! -bar -nargs=* Retab set ts=4 sw=4 sts=4 et | retab
-    packadd vim-prettier                # prettier/vim-prettier
-        if has("win32")
-            g:prettier#exec_cmd_path = "~/vimfiles/pack/dist/opt/vim-prettier/node_modules/.bin/prettier"
-        else
-            g:prettier#exec_cmd_path = "~/.config/vim/pack/dist/opt/vim-prettier/node_modules/.bin/prettier"
-        endif
-        g:prettier#config#use_tabs = 'true'
     packadd vim-slime                   # jpalardy/vim-slime
         g:slime_target = "vimterminal"
-    packadd rainbow_parentheses.vim     # junegunn/rainbow_parentheses
-        augroup RAINBOW_PARENS | autocmd!
-            autocmd FileType * RainbowParentheses
-            # autocmd FileType lisp,clojure,scheme RainbowParentheses
-        augroup end
     packadd vim-commentary              # tpope/vim-commentary
     packadd vim-surround                # tpope/vim-surround
     packadd vim-repeat                  # tpope/vim-repeat
@@ -162,9 +133,6 @@ def Format()
         exec "Make" a1 a2 a3 "%"
     elseif &ft == 'go' | set makeprg=gofmt | exec "Make -s -w %"
     elseif &ft == 'php' | exec "CocCommand editor.action.formatDocument"
-    elseif &ft == 'javascript' || &ft == 'javascriptreact' || &ft == 'html' || &ft == 'css' || &ft == 'json' || &ft == 'markdown'
-        exec "PrettierAsync"
-    endif
 enddef
 
 def Build()
