@@ -25,7 +25,7 @@ vim.opt.ttimeoutlen = 200
 -- UI
 vim.opt.termguicolors = true
 vim.opt.showmode = false
-vim.opt.showtabline = 2
+vim.opt.showtabline = 1
 vim.opt.foldcolumn = "1"
 vim.opt.fillchars:append({ vert = "│" })
 
@@ -108,10 +108,7 @@ require("lazy").setup({
 		config = function()
 			require("fzf-lua").setup({
 				winopts = {
-					-- fullscreen = true,
-					preview = {
-						flip_columns = 150,
-					},
+					preview = { flip_columns = 150, },
 				},
 			})
 
@@ -196,7 +193,8 @@ require("lazy").setup({
 					"json",
 					"php",
 					"blade",
-					"go"
+					"go",
+					"c",
 				},
 				highlight = { enable = true },
 			}
@@ -248,11 +246,19 @@ require("lazy").setup({
 	{
 		"imranzero/multiterm.nvim",
 		event = "VeryLazy",
+		opts = {
+			keymaps = {
+				toggle = "<C-z>",
+				list = "<space><C-z>",
+			},
+		},
+	},
+
+	{
+		"dstein64/nvim-scrollview",
+		event = "VeryLazy",
 		config = function()
-			require("multiterm").setup({
-				vim.keymap.set({ "n", "v", "i", "t" }, "<C-z>", "<Plug>(Multiterm)"),
-				vim.keymap.set("n", "<space><C-z>", "<Plug>(MultitermList)"),
-			})
+			vim.opt.mousemoveevent = true -- For hover indicator
 		end,
 	},
 
@@ -346,7 +352,7 @@ function _G.Tabline()
 		s = s .. hl .. (" %d: %s "):format(i, name)
 	end
 
-	s = s .. "%#StatusLineNC#%=" -- Highlight & right-align
+	s = s .. "%#Normal#%=" -- Highlight & right-align
 
 	local size = math.max(vim.fn.getfsize(vim.api.nvim_buf_get_name(0)), 0)
 	s = s .. "%#StatusLine#" .. (" [%s] [%s] [%.1fKB] "):format(
@@ -375,10 +381,11 @@ local cmode = {
 }
 
 local function git_branch()
-	local null = package.config:sub(1,1) == "\\" and "nul" or "/dev/null"
+	local null = package.config:sub(1, 1) == "\\" and "nul" or "/dev/null"
 	local h = io.popen("git rev-parse --abbrev-ref HEAD 2>" .. null)
 	if not h then return "" end
-	local b = h:read("*l") h:close()
+	local b = h:read("*l")
+	h:close()
 	return b and b ~= "" and b ~= "HEAD" and (" " .. b .. " ") or ""
 end
 
@@ -386,11 +393,11 @@ function _G.Statusline()
 	local s = " "
 	local mode = cmode[vim.fn.mode()] or "UNKNOWN"
 	s = s .. mode .. " "
-	s = s .. "%<" -- Truncate space if too long
+	s = s .. "%<"           -- Truncate space if too long
 	s = s .. "%#StatusLineNC#" -- Set highlight group
-	s = s .. " %F" -- Show full file path
-	s = s .. " %r%m%h" -- readonly, modified, help
-	s = s .. "%=" -- Right-align the next section
+	s = s .. " %F"          -- Show full file path
+	s = s .. " %r%m%h"      -- readonly, modified, help
+	s = s .. "%="           -- Right-align the next section
 	if vim.g.asyncdo then s = s .. "[running]" end
 	s = s .. git_branch()
 	s = s .. " ≣ %02p%%" -- File position percentage
@@ -462,7 +469,6 @@ function SmoothScroll(dir, dist, duration, speed)
 	step()
 end
 
-
 -- O---------------------------------------------------------------------------O
 -- |  Misc.                                                                    |
 -- O---------------------------------------------------------------------------O
@@ -499,7 +505,7 @@ local function Format()
 	})
 	local ft = vim.bo.filetype
 
-	if ft == "lua" or ft == "go" or ft == "javascript" or ft == "typescript" then
+	if ft == "lua" or ft == "go" or ft == "html" or ft == "javascript" or ft == "typescript" then
 		if #vim.lsp.get_clients({ bufnr = 0 }) > 0 then
 			vim.lsp.buf.format({ async = true })
 		else
@@ -747,7 +753,7 @@ if os.getenv("XDG_SESSION_TYPE") == "wayland" then
 	map("x", '"+y', [[y<Cmd>call system('wl-copy', @")<CR>]])
 	map("n", '"+p', [[<Cmd>let @"=substitute(system('wl-paste --no-newline'), "\r", "", "g")<CR>p]])
 	map("n", '"*p', [[<Cmd>let @"=substitute(system('wl-paste --no-newline --primary'), "\r", "", "g")<CR>p]])
-	map("x", "<space>y", '"+y')
+	map("v", "<space>y", '"+y')
 	map("n", "<space>p", '"+p')
 else
 	map("x", "<space>y", '"+y')
@@ -840,6 +846,10 @@ end, { desc = "Toggle hidden characters" })
 map("n", "<space>tc", function()
 	vim.o.background = (vim.o.background == "light") and "dark" or "light"
 end, { desc = "Toggle light/dark theme" })
+
+map("n", "<space>tt", function()
+	vim.o.showtabline = vim.o.showtabline == 2 and 1 or 2
+end, { desc = "Toggle tabline" })
 
 map("n", "<space>cc", function()
 	local col = vim.fn.virtcol(".")
