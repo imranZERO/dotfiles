@@ -183,7 +183,7 @@ require("lazy").setup({
 		event = "VeryLazy",
 		build = ":TSUpdate",
 		config = function()
-			require("nvim-treesitter.configs").setup {
+			require("nvim-treesitter.config").setup {
 				ensure_installed = {
 					"javascript",
 					"typescript",
@@ -280,7 +280,7 @@ require("lazy").setup({
 -- O---------------------------------------------------------------------------O
 
 -- Set colorscheme (check safely)
-pcall(vim.cmd, "colorscheme gruvbox")
+pcall(vim.cmd, "colorscheme vscode")
 
 -- These highlit groups are consistent across all colorschemes
 local function GlobalHighlights()
@@ -337,6 +337,18 @@ if vim.g.neovide then
 
 	-- Toggle fullscreen
 	vim.keymap.set("n", "<A-CR>", "<Cmd>lua vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen<CR>")
+
+	-- Detect KDE theme and set vim background accordingly
+	local handle = io.popen("kreadconfig6 --file kdeglobals --group General --key ColorScheme 2>/dev/null")
+	if handle then
+		local scheme = handle:read("*a") or ""
+		handle:close()
+		if scheme:lower():match("dark") then
+			vim.o.background = "dark"
+		else
+			vim.o.background = "light"
+		end
+	end
 end
 
 -- Tabline

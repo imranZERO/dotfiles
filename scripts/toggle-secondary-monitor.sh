@@ -8,10 +8,10 @@ if [[ $STATUS == *"enabled"* ]]; then
     kscreen-doctor output."$MONITOR_ID".disable
 
     # Easyeffects crashes when disabling. Relaunch it
-    # sleep 2s && easyeffects --gapplication-service
+    sleep 2s && easyeffects --gapplication-service
 else
     # Reset and enable the monitor with the new position
     kscreen-doctor output."$MONITOR_ID".disable && kscreen-doctor output."$MONITOR_ID".enable output."$MONITOR_ID".position."$POSITION"
 
-    # sleep 2s && easyeffects --gapplication-service
+    sleep 2s && easyeffects --gapplication-service
 fi
