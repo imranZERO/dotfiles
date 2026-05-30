@@ -3,21 +3,7 @@
 # usage: (for google search)
 # gg candy crush
 
-bemenu_config=(-b -i -l 20
-	--fn 'Iosevka Fixed'
-	--fb '#282828'
-	--ff '#ebdbb2'
-	--nb '#282828'
-	--nf '#ebdbb2'
-	--tb '#282828'
-	--hb '#282828'
-	--tf '#fb4934'
-	--hf '#fabd2f'
-	--af '#ebdbb2'
-	--ab '#282828'
-	-B 2 --bdr '#85AE7F'
-	--line-height 25
-)
+source "$(dirname "$0")/bemenu_theme.sh"
 
 sources_file="$HOME/scripts/dmenu-websearch-sources"
 
