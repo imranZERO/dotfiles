@@ -304,10 +304,30 @@ enddef
 g:gruvbox_invert_selection = '0' #| g:gruvbox_italic = '0'
 g:gruvbox_contrast_light = 'hard' | g:gruvbox_contrast_dark = 'medium'
 
-colorscheme gruvbox | &bg = 'dark'
+# colorscheme gruvbox | &bg = 'dark'
+# colorscheme onehalflight | &bg = 'light'
 # colorscheme hybrid | &bg = 'dark'
 # colorscheme flattened | &bg = 'light'
 # colorscheme zengarden | &bg = 'light' #| if has('gui_running') | ToggleBoldFont() | endif
+
+def SetThemeFromKDE()
+    var lines = readfile(expand('~/.config/kdeglobals'))
+    for line in lines
+        if line =~ '^ColorScheme='
+            var scheme = line->split('=')[1]
+
+            if scheme =~? 'dark'
+                &background = 'dark'
+                colorscheme habamax
+            else
+                &background = 'light'
+                colorscheme onehalflight
+            endif
+            break
+        endif
+    endfor
+enddef
+autocmd VimEnter * SetThemeFromKDE()
 
 def ColorSchemeMenu()
     var schemes = getcompletion('', 'color')
@@ -357,9 +377,9 @@ def g:ColorConfig()
             \ "#554444", "#cc5533", "#88aa22", "#ffa75d", "#87ceeb", "#996600", "#b0c4de", "#ddccbb",]
     endif
 enddef
-g:ColorConfig()
 augroup COLORCONFIG | autocmd!
     autocmd ColorScheme * g:ColorConfig()
+    autocmd VimEnter * g:ColorConfig()
 augroup end
 
 # O------------------------------------------------------------------O
